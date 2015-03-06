@@ -40,8 +40,48 @@ new ol.layer.Tile({
                 })
             ]
    }),
-       title: 'mérések'
+       title: 'mérések',
+	visible: false
+}),
+
+new ol.layer.Vector({ source: new ol.source.GeoJSON(
+({
+  projection: 'EPSG:3857',
+  preFeatureInsert: function(feature) {
+    feature.geometry.transform('EPSG:4326', 'EPSG:3857');
+  },
+  url: 'http://kolesar.turistautak.hu/osm/opencellid/geojson/overpass.geojson'
+})),
+
+
+style: (function() {
+  var defaultStyle = [new ol.style.Style({
+    image: new ol.style.Circle({
+        radius: 6,
+        fill: new ol.style.Fill({color: [255, 255, 255, 0.5]}),
+        stroke: new ol.style.Stroke({color: 'black', width: 1.5})
+    })
+  })];
+  var ruleStyle = [new ol.style.Style({
+    image: new ol.style.Circle({
+        radius: 6,
+        fill: new ol.style.Fill({color: [0, 128, 0, 0.5]}),
+        stroke: new ol.style.Stroke({color: 'black', width: 1.5})
+    })
+  })];
+  return function(feature, resolution) {
+    if (feature.get('gsm:cellid')) {
+      return ruleStyle;
+    } else {
+      return defaultStyle;
+    }
+  };
+})(),
+
+title: 'bázisállomások'
+
 })
+
 ],
         view: new ol.View({
           center: ol.proj.transform([19.5, 47.2], 'EPSG:4326', 'EPSG:3857'),
