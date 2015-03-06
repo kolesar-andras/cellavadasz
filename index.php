@@ -54,29 +54,43 @@ new ol.layer.Vector({ source: new ol.source.GeoJSON(
 })),
 
 
-style: (function() {
-  var defaultStyle = [new ol.style.Style({
-    image: new ol.style.Circle({
-        radius: 6,
-        fill: new ol.style.Fill({color: [255, 255, 255, 0.5]}),
-        stroke: new ol.style.Stroke({color: 'black', width: 1.5})
-    })
-  })];
-  var ruleStyle = [new ol.style.Style({
-    image: new ol.style.Circle({
-        radius: 6,
-        fill: new ol.style.Fill({color: [0, 128, 0, 0.5]}),
-        stroke: new ol.style.Stroke({color: 'black', width: 1.5})
-    })
-  })];
-  return function(feature, resolution) {
-    if (feature.get('gsm:cellid')) {
-      return ruleStyle;
-    } else {
-      return defaultStyle;
+style: function(feature, resolution) {
+
+    var color = '#808080';
+    width = feature.get('gsm:cellid') ? 1.6 : 1.0;
+radius = feature.get('gsm:cellid') ? 5.5 : 4.0;
+    switch (feature.get('operator')) {
+        case 'Telekom':  color = '#000000'; break;
+	case 'Telenor':  color = '#00a9e3'; break;
+	case 'Vodafone': color = '#d5030b'; break;
     }
-  };
-})(),
+
+    var image = new ol.style.Circle({
+        radius: radius,
+        fill: new ol.style.Fill({color: color}),
+        stroke: new ol.style.Stroke({color: 'white', width: width})
+    });
+/*
+    text: new ol.style.Text({
+	font: '8px sans-serif',
+        text: feature.get('operator'),
+        fill: new ol.style.Fill({color: '#000' }),
+	offsetY: 12
+    }) */
+
+    var style = {image: image};
+/*
+    if (feature.get('gsm:cellid')) {
+        return [new ol.style.Style(style), new ol.style.Style({image:
+	    new ol.style.Circle({
+		radius: 2,
+        	fill: new ol.style.Fill({color: 'white'})
+	    })
+        })]
+    };
+*/
+    return [new ol.style.Style(style)];
+},
 
 title: 'bázisállomások'
 
