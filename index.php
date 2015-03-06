@@ -110,7 +110,7 @@ new ol.layer.Vector({ source: new ol.source.GeoJSON(
 style: function(feature, resolution) {
 
     var color = '#909090';
-    var width = feature.get('gsm:cellid') ? 1.5 : 1.0;
+    var width = feature.get('gsm:cellid') ? 1.8 : 1.2;
     var radius = feature.get('gsm:cellid') ? 7.0 : 5.0;
     var operator = feature.get('operator');
     switch (operator) {
