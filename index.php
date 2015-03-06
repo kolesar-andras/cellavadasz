@@ -10,6 +10,7 @@
 	margin: 0;
       }
     </style>
+    <script src="lib/jquery.min.js" type="text/javascript"></script>
     <script src="lib/ol/build/ol.js" type="text/javascript"></script>
     <script src="lib/ol/build/ol3-layerswitcher.js" type="text/javascript"></script>
     <title>cellavadász</title>
@@ -56,14 +57,16 @@ new ol.layer.Vector({ source: new ol.source.GeoJSON(
 
 style: function(feature, resolution) {
 
-    var color = '#808080';
-    width = feature.get('gsm:cellid') ? 1.6 : 1.0;
-radius = feature.get('gsm:cellid') ? 5.5 : 4.0;
-    switch (feature.get('operator')) {
+    var color = '#909090';
+    var width = feature.get('gsm:cellid') ? 1.6 : 1.0;
+    var radius = feature.get('gsm:cellid') ? 5.5 : 4.0;
+    var operator = feature.get('operator');
+    switch (operator) {
         case 'Telekom':  color = '#000000'; break;
 	case 'Telenor':  color = '#00a9e3'; break;
 	case 'Vodafone': color = '#d5030b'; break;
     }
+    if (operator && operator.indexOf(';') != -1) color = '#606060';
 
     var image = new ol.style.Circle({
         radius: radius,
