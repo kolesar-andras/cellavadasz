@@ -195,7 +195,7 @@ map.on('click', function(evt) {
     var coord = geometry.getCoordinates();
   var coordinate = evt.coordinate;
 
-    var html = '';
+    var html = 'node <a href="http://openstreetmap.org/node/'+feature.get('id')+'">'+feature.get('id')+'</a>'+"<br/>\n";
     var prop = feature.n; // feature.getAttributes();
     for (k in prop) {
     //   html += 'gsm:cellid=' + feature.get('gsm:cellid');
