@@ -13,6 +13,8 @@
 	font-size: 10px;
       }
 
+	a, a:link, a:visited, a:hover, a:active { color: #404040; }
+
       .ol-popup {
         position: absolute;
         background-color: white;
@@ -200,6 +202,7 @@ map.on('click', function(evt) {
     for (k in prop) {
     //   html += 'gsm:cellid=' + feature.get('gsm:cellid');
 if (k=='geometry') continue;
+if (k=='id') continue;
   html += k + '=' + prop[k] + "<br/>\n";
 }
   content.innerHTML = html;
