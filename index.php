@@ -58,6 +58,27 @@
       .ol-popup-closer:after {
         content: "✖";
       }
+	#sarok {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		z-index: 1000;
+		padding: 5px;
+		visibility: hidden;
+    /* Fallback for web browsers that doesn't support RGBa */
+    background: rgb(255, 255, 255);
+    /* RGBa with 0.6 opacity */
+    background: rgba(255, 255, 255, 0.4);
+    /* For IE 5.5 - 7*/
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#66FFFFFF, endColorstr=#66FFFFFF);
+    /* For IE 8*/
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#66FFFFFF, endColorstr=#66FFFFFF)";
+
+	}
+
+	#sarok span {
+		font-weight: bold;
+	}
 
     </style>
     <script src="lib/jquery.min.js" type="text/javascript"></script>
@@ -66,6 +87,11 @@
     <title>cellavadász</title>
   </head>
   <body>
+<div id="sarok">
+    <div><span id="count.all"></span> bázisállomás</div>
+    <div><span id="count.operator"></span> szolgáltatóval</div>
+    <div><span id="count.cellid"></span> cella-azonosítókkal</div>
+</div>
     <div id="map" class="map">
             <div id="popup" class="ol-popup">
                 <a href="#" id="popup-closer" class="ol-popup-closer"></a>
@@ -73,41 +99,43 @@
             </div>
 </div>
     <script type="text/javascript">
-      var map = new ol.Map({
-        target: 'map',
-        layers: [
-new ol.layer.Tile({
-       source: new ol.source.XYZ({
-       url: 'http://a.map.turistautak.hu/tiles/osm/{z}/{x}/{y}.png'
 
-   }),
-       type: 'base',
-       title: 'turistatérkép'
-}),
-new ol.layer.Tile({source: new ol.source.OSM(), type: 'base', title: 'mapnik'}),
-new ol.layer.Tile({
-       source: new ol.source.XYZ({
-       url: 'http://a.map.turistautak.hu/tiles/measurements/{z}/{x}/{y}.png',
-	attributions: [
-                new ol.Attribution({
-                    html: '<a href="http://opencellid.org/">OpenCellID database CC-BY-SA 3.0</a>',
-                    collapsed: true,
-                })
-            ]
-   }),
-       title: 'mérések',
-	visible: false
-}),
+function hasCellId (feature) {
+	return !(
+		!feature.get('gsm:cellid') &&
+		!feature.get('umts:cellid') &&
+		!feature.get('lte:cellid')
+	);
+}
 
-new ol.layer.Vector({ source: new ol.source.GeoJSON(
+var source = new ol.source.GeoJSON(
 ({
   projection: 'EPSG:3857',
   preFeatureInsert: function(feature) {
     feature.geometry.transform('EPSG:4326', 'EPSG:3857');
   },
   url: 'http://kolesar.turistautak.hu/osm/opencellid/geojson/overpass.geojson'
-})),
+}));
 
+var count = {
+    all: 0,
+    operator: 0,
+    cellid: 0
+}
+
+source.once('change', function () {
+    source.forEachFeature(function (feature) {
+	count.all++;
+	if (feature.get('operator')) count.operator++;
+	if (hasCellId(feature)) count.cellid++;
+    });
+    document.getElementById('count.all').innerHTML = count.all;
+    document.getElementById('count.operator').innerHTML = count.operator;
+    document.getElementById('count.cellid').innerHTML = count.cellid;
+    document.getElementById('sarok').style.visibility = 'visible';
+});
+
+var sites = new ol.layer.Vector({ source: source,
 
 style: function(feature, resolution) {
 /*
@@ -135,11 +163,7 @@ style: function(feature, resolution) {
     if (operator && operator.indexOf('Telekom') != -1) operators.push('30');
     if (operator && operator.indexOf('Vodafone') != -1) operators.push('70');
     if (operators.length == 0) operators.push('00');
-    var small = (
-	!feature.get('gsm:cellid') &&
-	!feature.get('umts:cellid') &&
-	!feature.get('lte:cellid')
-	) ? '.small' : '';
+    var small = !hasCellId(feature) ? '.small' : '';
     var filename = 'img/' + operators.join('-') + small + '.svg';
 
     var icon = new ol.style.Icon({
@@ -169,7 +193,36 @@ style: function(feature, resolution) {
 
 title: 'bázisállomások'
 
-})
+});
+
+
+      var map = new ol.Map({
+        target: 'map',
+        layers: [
+new ol.layer.Tile({
+       source: new ol.source.XYZ({
+       url: 'http://a.map.turistautak.hu/tiles/osm/{z}/{x}/{y}.png'
+
+   }),
+       type: 'base',
+       title: 'turistatérkép'
+}),
+new ol.layer.Tile({source: new ol.source.OSM(), type: 'base', title: 'mapnik'}),
+new ol.layer.Tile({
+       source: new ol.source.XYZ({
+       url: 'http://a.map.turistautak.hu/tiles/measurements/{z}/{x}/{y}.png',
+	attributions: [
+                new ol.Attribution({
+                    html: '<a href="http://opencellid.org/">OpenCellID database CC-BY-SA 3.0</a>',
+                    collapsed: true,
+                })
+            ]
+   }),
+       title: 'mérések',
+	visible: false
+}),
+
+sites
 
 ],
         view: new ol.View({
