@@ -110,7 +110,7 @@ new ol.layer.Vector({ source: new ol.source.GeoJSON(
 
 
 style: function(feature, resolution) {
-
+/*
     var color = '#909090';
     var width = feature.get('gsm:cellid') ? 1.8 : 1.2;
     var radius = feature.get('gsm:cellid') ? 7.0 : 5.0;
@@ -127,6 +127,24 @@ style: function(feature, resolution) {
         fill: new ol.style.Fill({color: color}),
         stroke: new ol.style.Stroke({color: 'white', width: width})
     });
+*/
+
+    var operators = [];
+    var operator = feature.get('operator');
+    if (operator && operator.indexOf('Telenor') != -1) operators.push('01');
+    if (operator && operator.indexOf('Telekom') != -1) operators.push('30');
+    if (operator && operator.indexOf('Vodafone') != -1) operators.push('70');
+    if (operators.length == 0) operators.push('00');
+    var small = (
+	!feature.get('gsm:cellid') &&
+	!feature.get('umts:cellid') &&
+	!feature.get('lte:cellid')
+	) ? '.small' : '';
+    var filename = 'img/' + operators.join('-') + small + '.svg';
+
+    var icon = new ol.style.Icon({
+	src: filename
+    });
 /*
     text: new ol.style.Text({
 	font: '8px sans-serif',
@@ -135,7 +153,7 @@ style: function(feature, resolution) {
 	offsetY: 12
     }) */
 
-    var style = {image: image};
+    var style = {image: icon};
 /*
     if (feature.get('gsm:cellid')) {
         return [new ol.style.Style(style), new ol.style.Style({image:
