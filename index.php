@@ -25,7 +25,7 @@
         border: 1px solid #cccccc; */
         bottom: 12px;
         left: -50px;
-	width: 200px;
+	width: 250px;
       }
       .ol-popup:after, .ol-popup:before {
         top: 100%;
@@ -102,9 +102,9 @@
 
 function hasCellId (feature) {
 	return !(
-		!feature.get('gsm:cellid') &&
-		!feature.get('umts:cellid') &&
-		!feature.get('lte:cellid')
+		!feature.n.tags['gsm:cellid'] &&
+		!feature.n.tags['umts:cellid'] &&
+		!feature.n.tags['lte:cellid']
 	);
 }
 
@@ -126,7 +126,7 @@ var count = {
 source.once('change', function () {
     source.forEachFeature(function (feature) {
 	count.all++;
-	if (feature.get('operator')) count.operator++;
+	if (feature.n.tags.operator) count.operator++;
 	if (hasCellId(feature)) count.cellid++;
     });
     document.getElementById('count.all').innerHTML = count.all;
@@ -138,27 +138,9 @@ source.once('change', function () {
 var sites = new ol.layer.Vector({ source: source,
 
 style: function(feature, resolution) {
-/*
-    var color = '#909090';
-    var width = feature.get('gsm:cellid') ? 1.8 : 1.2;
-    var radius = feature.get('gsm:cellid') ? 7.0 : 5.0;
-    var operator = feature.get('operator');
-    switch (operator) {
-        case 'Telekom':  color = '#000000'; break;
-	case 'Telenor':  color = '#00a9e3'; break;
-	case 'Vodafone': color = '#d5030b'; break;
-    }
-    if (operator && operator.indexOf(';') != -1) color = '#606060';
-
-    var image = new ol.style.Circle({
-        radius: radius,
-        fill: new ol.style.Fill({color: color}),
-        stroke: new ol.style.Stroke({color: 'white', width: width})
-    });
-*/
 
     var operators = [];
-    var operator = feature.get('operator');
+    var operator = feature.n.tags.operator;
     if (operator && operator.indexOf('Telenor') != -1) operators.push('01');
     if (operator && operator.indexOf('Telekom') != -1) operators.push('30');
     if (operator && operator.indexOf('Vodafone') != -1) operators.push('70');
@@ -169,25 +151,9 @@ style: function(feature, resolution) {
     var icon = new ol.style.Icon({
 	src: filename
     });
-/*
-    text: new ol.style.Text({
-	font: '8px sans-serif',
-        text: feature.get('operator'),
-        fill: new ol.style.Fill({color: '#000' }),
-	offsetY: 12
-    }) */
 
     var style = {image: icon};
-/*
-    if (feature.get('gsm:cellid')) {
-        return [new ol.style.Style(style), new ol.style.Style({image:
-	    new ol.style.Circle({
-		radius: 2,
-        	fill: new ol.style.Fill({color: 'white'})
-	    })
-        })]
-    };
-*/
+
     return [new ol.style.Style(style)];
 },
 
@@ -268,14 +234,20 @@ map.on('click', function(evt) {
     var coord = geometry.getCoordinates();
   var coordinate = evt.coordinate;
 
-    var html = 'node <a href="http://openstreetmap.org/node/'+feature.get('id')+'">'+feature.get('id')+'</a>'+"<br/>\n";
-    var prop = feature.n; // feature.getAttributes();
+    var html = '';
+    html += 'id=<a href="http://openstreetmap.org/node/'+feature.get('id')+'">'+feature.get('id')+'</a>'+"<br/>\n";
+    html += 'user=<a href="http://openstreetmap.org/user/'+feature.get('user')+'">'+feature.get('user')+'</a>'+"<br/>\n";
+    html += 'changeset=<a href="http://openstreetmap.org/changeset/'+feature.get('changeset')+'">'+feature.get('changeset')+'</a>'+"<br/>\n";
+    var prop = feature.n;
     for (k in prop) {
-    //   html += 'gsm:cellid=' + feature.get('gsm:cellid');
-if (k=='geometry') continue;
-if (k=='id') continue;
-  html += k + '=' + prop[k] + "<br/>\n";
-}
+      if (['timestamp', 'version'].indexOf(k) == -1) continue;
+      if (typeof(prop[k]) === 'undefined') continue;
+      html += k + '=' + prop[k] + "<br/>\n";
+    }
+    var prop = feature.n.tags; // feature.getAttributes();
+    for (k in prop) {
+      html += k + '=' + prop[k] + "<br/>\n";
+    }
   content.innerHTML = html;
   overlay.setPosition(coordinate);
 
