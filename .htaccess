@@ -1,0 +1,4 @@
+# SVG
+AddType image/svg+xml .svg .svgz
+AddEncoding x-gzip .svgz
+
