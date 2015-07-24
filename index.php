@@ -143,6 +143,7 @@ function clickOperator () {
 	display.unknown = true;
     }
     sites.changed();
+    countCells();
 }
 
 var source = new ol.source.GeoJSON(
@@ -167,23 +168,7 @@ var display = {
     unknown: true
 };
 
-source.once('change', function () {
-    source.forEachFeature(function (feature) {
-	count.all++;
-	if (feature.n.tags.operator) count.operator++;
-	if (hasCellId(feature)) count.cellid++;
-    });
-    document.getElementById('count.all').innerHTML = count.all;
-    document.getElementById('count.operator').innerHTML = count.operator;
-    document.getElementById('count.cellid').innerHTML = count.cellid;
-    document.getElementById('sarok').style.visibility = 'visible';
-});
-
-var sites = new ol.layer.Vector({ source: source,
-
-style: function(feature, resolution) {
-
-    var operators = [];
+function getOperators(feature) {
     var operator = feature.n.tags.operator;
     var is = {};
     if (operator) {
@@ -192,11 +177,45 @@ style: function(feature, resolution) {
         if (operator.indexOf('Vodafone') != -1) is.vodafone = true; // operators.push('70');
     }
     if (!is.telenor && !is.telekom && !is.vodafone) is.unknown = true; // operators.push('00');
+    return is;
+}
 
+function countCells () {
+    count.all = 0;
+    count.operator = 0;
+    count.cellid=0;
+
+    source.forEachFeature(function (feature) {
+	is = getOperators(feature);
+	if (is.telenor && !display.telenor) return;
+	if (is.telekom && !display.telekom) return;
+	if (is.vodafone && !display.vodafone) return;
+	if (is.unknown && !display.unknown) return;
+	count.all++;
+	if (feature.n.tags.operator) count.operator++;
+	if (hasCellId(feature)) count.cellid++;
+    });
+    document.getElementById('count.all').innerHTML = count.all;
+    document.getElementById('count.operator').innerHTML = count.operator;
+    document.getElementById('count.cellid').innerHTML = count.cellid;
+    document.getElementById('sarok').style.visibility = 'visible';
+}
+
+source.once('change', countCells);
+
+var sites = new ol.layer.Vector({ source: source,
+
+style: function(feature, resolution) {
+
+    is = getOperators(feature);
+
+    var operators = [];
     if (display.telenor && is.telenor) operators.push('01');
     if (display.telekom && is.telekom) operators.push('30');
     if (display.vodafone && is.vodafone) operators.push('70');
     if (display.unknown && is.unknown) operators.push('00');
+
+    if (!operators.length) return;
 
     var small = !hasCellId(feature) ? '.small' : '';
     var filename = 'img/' + operators.join('-') + small + '.svg';
