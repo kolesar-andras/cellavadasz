@@ -68,16 +68,30 @@
     /* Fallback for web browsers that doesn't support RGBa */
     background: rgb(255, 255, 255);
     /* RGBa with 0.6 opacity */
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.6);
     /* For IE 5.5 - 7*/
-    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#66FFFFFF, endColorstr=#66FFFFFF);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99FFFFFF, endColorstr=#99FFFFFF);
     /* For IE 8*/
-    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#66FFFFFF, endColorstr=#66FFFFFF)";
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99FFFFFF, endColorstr=#99FFFFFF)";
 
 	}
 
-	#sarok span {
+	#count span {
 		font-weight: bold;
+	}
+        #operators {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+	    padding-bottom: 5px;
+	}
+
+	#operators img {
+	    margin: -18px -18px -18px -18px;
+	    pointer-events: none;
 	}
 
     </style>
@@ -88,9 +102,17 @@
   </head>
   <body>
 <div id="sarok">
+<div id="operators">
+<div><img src="img/01.svg" /><input type="checkbox" id="checkbox.telenor" onclick="clickOperator()"/> <label for="checkbox.telenor">Telenor</label></div>
+<div><img src="img/30.svg" /><input type="checkbox" id="checkbox.telekom" onclick="clickOperator()"/> <label for="checkbox.telekom">Telekom</label></div>
+<div><img src="img/70.svg" /><input type="checkbox" id="checkbox.vodafone" onclick="clickOperator()"/> <label for="checkbox.vodafone">Vodafone</label></div>
+<div><img src="img/00.svg" /><input type="checkbox" id="checkbox.unknown" onclick="clickOperator()"/> <label for="checkbox.unknown">ismeretlen</label></div>
+</div>
+<div id="count">
     <div><span id="count.all"></span> bázisállomás</div>
     <div><span id="count.operator"></span> szolgáltatóval</div>
     <div><span id="count.cellid"></span> cella-azonosítókkal</div>
+</div>
 </div>
     <div id="map" class="map">
             <div id="popup" class="ol-popup">
@@ -108,6 +130,21 @@ function hasCellId (feature) {
 	);
 }
 
+function clickOperator () {
+    display.telenor = document.getElementById('checkbox.telenor').checked;
+    display.telekom = document.getElementById('checkbox.telekom').checked;
+    display.vodafone = document.getElementById('checkbox.vodafone').checked;
+    display.unknown = document.getElementById('checkbox.unknown').checked;
+    var checked = display.telenor || display.telekom || display.vodafone || display.unknown;
+    if (!checked) {
+	display.telenor = true;
+	display.telekom = true;
+	display.vodafone = true;
+	display.unknown = true;
+    }
+    sites.changed();
+}
+
 var source = new ol.source.GeoJSON(
 ({
   projection: 'EPSG:3857',
@@ -121,7 +158,14 @@ var count = {
     all: 0,
     operator: 0,
     cellid: 0
-}
+};
+
+var display = {
+    telenor: true,
+    telekom: true,
+    vodafone: true,
+    unknown: true
+};
 
 source.once('change', function () {
     source.forEachFeature(function (feature) {
@@ -141,10 +185,19 @@ style: function(feature, resolution) {
 
     var operators = [];
     var operator = feature.n.tags.operator;
-    if (operator && operator.indexOf('Telenor') != -1) operators.push('01');
-    if (operator && operator.indexOf('Telekom') != -1) operators.push('30');
-    if (operator && operator.indexOf('Vodafone') != -1) operators.push('70');
-    if (operators.length == 0) operators.push('00');
+    var is = {};
+    if (operator) {
+        if (operator.indexOf('Telenor') != -1) is.telenor = true; // operators.push('01');
+        if (operator.indexOf('Telekom') != -1) is.telekom = true; // operators.push('30');
+        if (operator.indexOf('Vodafone') != -1) is.vodafone = true; // operators.push('70');
+    }
+    if (!is.telenor && !is.telekom && !is.vodafone) is.unknown = true; // operators.push('00');
+
+    if (display.telenor && is.telenor) operators.push('01');
+    if (display.telekom && is.telekom) operators.push('30');
+    if (display.vodafone && is.vodafone) operators.push('70');
+    if (display.unknown && is.unknown) operators.push('00');
+
     var small = !hasCellId(feature) ? '.small' : '';
     var filename = 'img/' + operators.join('-') + small + '.svg';
 
