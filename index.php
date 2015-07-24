@@ -285,7 +285,8 @@
 
 		// display popup on click
 		map.on('click', function(evt) {
-			var feature = map.forEachFeatureAtPixel(evt.pixel,
+			var feature = map.forEachFeatureAtPixel(
+				[evt.pixel[0]-8, evt.pixel[1]],
 				function(feature, layer) {
 					return feature;
 				});
