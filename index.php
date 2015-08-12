@@ -101,12 +101,14 @@
 			<div><img src="img/01.svg" /><input type="checkbox" id="checkbox.telenor" onclick="clickOperator()"/> <label for="checkbox.telenor">Telenor</label></div>
 			<div><img src="img/30.svg" /><input type="checkbox" id="checkbox.telekom" onclick="clickOperator()"/> <label for="checkbox.telekom">Telekom</label></div>
 			<div><img src="img/70.svg" /><input type="checkbox" id="checkbox.vodafone" onclick="clickOperator()"/> <label for="checkbox.vodafone">Vodafone</label></div>
-			<div><img src="img/00.svg" /><input type="checkbox" id="checkbox.unknown" onclick="clickOperator()"/> <label for="checkbox.unknown">ismeretlen</label></div>
+			<div title="bázisállomás ismeretlen szolgáltatóval"><img src="img/00.svg" /><input type="checkbox" id="checkbox.unknown" onclick="clickOperator()"/> <label for="checkbox.unknown">ismeretlen</label></div>
+			<div title="torony, amelyől nem tudjuk, hogy bázisállomás-e"><img src="img/nosite.svg" /><input type="checkbox" id="checkbox.nosite" onclick="clickOperator()"/> <label for="checkbox.nosite">torony</label></div>
 		</div>
 		<div id="count">
-			<div><span id="count.all"></span> bázisállomás</div>
-			<div><span id="count.operator"></span> szolgáltatóval</div>
-			<div><span id="count.cellid"></span> cella-azonosítókkal</div>
+			<div title="tornyok összesen"><span id="count.all"></span> torony</div>
+			<div title="bázisállomásként címkézett tornyok"><span id="count.site"></span> bázisállomás</div>
+			<div title="szolgáltatóval címkézett bázisállomások"><span id="count.operator"></span> szolgáltatóval</div>
+			<div title="cella-azonosítókkal is címkézett bázisállomások"><span id="count.cellid"></span> cella-azonosítókkal</div>
 		</div>
 	</div>
 	<div id="map" class="map">
@@ -119,6 +121,7 @@
 
 		var count = {
 			all: 0,
+			site: 0,
 			operator: 0,
 			cellid: 0
 		};
@@ -127,7 +130,8 @@
 			telenor: true,
 			telekom: true,
 			vodafone: true,
-			unknown: true
+			unknown: true,
+			nosite: true
 		};
 
 		function hasCellId (feature) {
@@ -143,12 +147,14 @@
 			display.telekom = document.getElementById('checkbox.telekom').checked;
 			display.vodafone = document.getElementById('checkbox.vodafone').checked;
 			display.unknown = document.getElementById('checkbox.unknown').checked;
-			var checked = display.telenor || display.telekom || display.vodafone || display.unknown;
+			display.nosite = document.getElementById('checkbox.nosite').checked;
+			var checked = display.telenor || display.telekom || display.vodafone || display.unknown || display.nosite;
 			if (!checked) {
 				display.telenor = true;
 				display.telekom = true;
 				display.vodafone = true;
 				display.unknown = true;
+				display.nosite = true;
 			}
 			sites.changed();
 			countCells();
@@ -162,12 +168,14 @@
 				if (operator.indexOf('Telekom') != -1) is.telekom = true; // operators.push('30');
 				if (operator.indexOf('Vodafone') != -1) is.vodafone = true; // operators.push('70');
 			}
-			if (!is.telenor && !is.telekom && !is.vodafone) is.unknown = true; // operators.push('00');
+			if (feature.n.tags['communication:mobile_phone']) is.site = true;
+			if (is.site && !is.telenor && !is.telekom && !is.vodafone) is.unknown = true; // operators.push('00');
 			return is;
 		}
 
 		function countCells () {
 			count.all = 0;
+			count.site = 0;
 			count.operator = 0;
 			count.cellid=0;
 
@@ -177,11 +185,17 @@
 			if (is.telekom && !display.telekom) return;
 			if (is.vodafone && !display.vodafone) return;
 			if (is.unknown && !display.unknown) return;
+			if (!is.site && !display.nosite) return;
 			count.all++;
+			if (
+			    feature.n.tags['communication:mobile_phone'] &&
+			    feature.n.tags['communication:mobile_phone'] != 'no'
+			) count.site++;
 			if (feature.n.tags.operator) count.operator++;
 			if (hasCellId(feature)) count.cellid++;
 			});
 			document.getElementById('count.all').innerHTML = count.all;
+			document.getElementById('count.site').innerHTML = count.site;
 			document.getElementById('count.operator').innerHTML = count.operator;
 			document.getElementById('count.cellid').innerHTML = count.cellid;
 			document.getElementById('sarok').style.visibility = 'visible';
@@ -205,6 +219,7 @@
 				if (display.telekom && is.telekom) operators.push('30');
 				if (display.vodafone && is.vodafone) operators.push('70');
 				if (display.unknown && is.unknown) operators.push('00');
+				if (display.nosite && !is.site) operators.push('nosite');
 
 				if (!operators.length) return;
 
