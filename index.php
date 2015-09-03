@@ -105,10 +105,12 @@
 			<div title="torony, amelyől nem tudjuk, hogy bázisállomás-e"><img src="img/nosite.svg" /><input type="checkbox" id="checkbox.nosite" onclick="clickOperator()"/> <label for="checkbox.nosite">torony</label></div>
 		</div>
 		<div id="count">
-			<div title="tornyok összesen"><span id="count.all"></span> torony</div>
+			<div title="tornyok összesen (víztornyokkal, kéményekkel együtt)"><span id="count.all"></span> torony</div>
 			<div title="bázisállomásként címkézett tornyok"><span id="count.site"></span> bázisállomás</div>
 			<div title="szolgáltatóval címkézett bázisállomások"><span id="count.operator"></span> szolgáltatóval</div>
+			<div title="bázisállomások összesen (közösek külön-külön számítva)"><span id="count.unique.site"></span> szolgáltatókra bontva</div>
 			<div title="cella-azonosítókkal is címkézett bázisállomások"><span id="count.cellid"></span> cella-azonosítókkal</div>
+			<div title="cellák összesen (gsm, umts, lte)"><span id="count.unique.cellid"></span> cella</div>
 		</div>
 	</div>
 	<div id="map" class="map">
@@ -140,6 +142,19 @@
 				!feature.n.tags['umts:cellid'] &&
 				!feature.n.tags['lte:cellid']
 			);
+		}
+
+		function getCount (value) {
+			if (!value) return 0;
+			items = value.split(';');
+			var count = 0;
+			for (i=0; i<items.length; i++) {
+				item = items[i].trim();
+				if (item == 'fixme') continue;
+				if (item == 'none') continue;
+				count++;
+			}
+			return count;
 		}
 
 		function clickOperator () {
@@ -177,7 +192,13 @@
 			count.all = 0;
 			count.site = 0;
 			count.operator = 0;
-			count.cellid=0;
+			count.cellid = 0;
+			count.unique = {};
+			count.unique.site = 0;
+			count.unique.cellid = {};
+			count.unique.cellid.gsm = 0;
+			count.unique.cellid.umts = 0;
+			count.unique.cellid.lte = 0;
 
 			source.forEachFeature(function (feature) {
 			is = getOperators(feature);
@@ -191,13 +212,30 @@
 			    feature.n.tags['communication:mobile_phone'] &&
 			    feature.n.tags['communication:mobile_phone'] != 'no'
 			) count.site++;
-			if (feature.n.tags.operator) count.operator++;
-			if (hasCellId(feature)) count.cellid++;
+			if (feature.n.tags.operator) {
+			    count.operator++;
+			    count.unique.site += getCount(feature.n.tags.operator);
+			}
+			if (hasCellId(feature)) {
+			    count.cellid++;
+			    count.unique.cellid.gsm  += getCount(feature.n.tags['gsm:cellid']);
+			    count.unique.cellid.umts += getCount(feature.n.tags['umts:cellid']);
+			    count.unique.cellid.lte  += getCount(feature.n.tags['lte:cellid']);
+			}
 			});
 			document.getElementById('count.all').innerHTML = count.all;
 			document.getElementById('count.site').innerHTML = count.site;
 			document.getElementById('count.operator').innerHTML = count.operator;
 			document.getElementById('count.cellid').innerHTML = count.cellid;
+			document.getElementById('count.unique.site').innerHTML = count.unique.site;
+			document.getElementById('count.unique.cellid').innerHTML =
+				count.unique.cellid.gsm + '+' +
+				count.unique.cellid.umts + '+' +
+				count.unique.cellid.lte + '=' + (
+				count.unique.cellid.gsm +
+				count.unique.cellid.umts +
+				count.unique.cellid.lte);
+
 			document.getElementById('sarok').style.visibility = 'visible';
 		}
 
