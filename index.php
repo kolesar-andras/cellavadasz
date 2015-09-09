@@ -144,6 +144,21 @@
 			);
 		}
 
+		function getVisibleItems (feature, key) {
+			if (!feature.n.tags[key]) return;
+			var out = [];
+			operators = feature.n.tags.operator.split('; ');
+			items = feature.n.tags[key].split('; ');
+			for (var i=0; i<operators.length; i++) {
+				operator = operators[i];
+				if (operator == 'Telenor' && !display.telenor) continue;
+				if (operator == 'Telekom' && !display.telekom) continue;
+				if (operator == 'Vodafone' && !display.vodafone) continue;
+				out.push(items[i]);
+			}
+			return out.join('; ');
+		}
+
 		function getCount (value) {
 			if (!value) return 0;
 			items = value.split(';');
@@ -202,11 +217,13 @@
 
 			source.forEachFeature(function (feature) {
 			is = getOperators(feature);
-			if (is.telenor && !display.telenor) return;
-			if (is.telekom && !display.telekom) return;
-			if (is.vodafone && !display.vodafone) return;
-			if (is.unknown && !display.unknown) return;
-			if (!is.site && !display.nosite) return;
+			if (!(
+				(is.telenor && display.telenor) ||
+				(is.telekom && display.telekom) ||
+				(is.vodafone && display.vodafone) ||
+				(is.unknown && display.unknown) ||
+				(!is.site && display.nosite)
+			)) return;
 			count.all++;
 			if (
 			    feature.n.tags['communication:mobile_phone'] &&
@@ -214,13 +231,13 @@
 			) count.site++;
 			if (feature.n.tags.operator) {
 			    count.operator++;
-			    count.unique.site += getCount(feature.n.tags.operator);
+			    count.unique.site += getCount(getVisibleItems(feature, 'operator'));
 			}
 			if (hasCellId(feature)) {
 			    count.cellid++;
-			    count.unique.cellid.gsm  += getCount(feature.n.tags['gsm:cellid']);
-			    count.unique.cellid.umts += getCount(feature.n.tags['umts:cellid']);
-			    count.unique.cellid.lte  += getCount(feature.n.tags['lte:cellid']);
+			    count.unique.cellid.gsm  += getCount(getVisibleItems(feature, 'gsm:cellid'));
+			    count.unique.cellid.umts += getCount(getVisibleItems(feature, 'umts:cellid'));
+			    count.unique.cellid.lte  += getCount(getVisibleItems(feature, 'lte:cellid'));
 			}
 			});
 			document.getElementById('count.all').innerHTML = count.all;
@@ -339,7 +356,7 @@
 		// display popup on click
 		map.on('click', function(evt) {
 			var feature = map.forEachFeatureAtPixel(
-				[evt.pixel[0]-8, evt.pixel[1]],
+				[evt.pixel[0]-5, evt.pixel[1]],
 				function(feature, layer) {
 					return feature;
 				});
