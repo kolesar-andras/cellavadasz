@@ -54,13 +54,12 @@
 		<a href="#lang-en" onclick="window.lang.change('en'); console.log(sites); console.log(sites); return false;">english</a> | <a href="#lang-hu" onclick="window.lang.change('hu'); return false;">hungarian</a>
 	</div>
 	<div id="map" class="map">
-		<div id="popup" class="ol-popup">
-			<a href="#" id="popup-closer" class="ol-popup-closer"></a>
-			<div id="popup-content"></div>
+		<div id="popup-wrapper">
+			<div id="popup" class="ol-popup">
+				<a href="#" id="popup-closer" class="ol-popup-closer"></a>
+				<div id="popup-content"></div>
+			</div>
 		</div>
 	</div>
-	<script type="text/javascript">
-
-	</script>
 	</body>
 </html>
