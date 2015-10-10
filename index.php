@@ -51,7 +51,16 @@
 			<div lang="hu" title="cella-azonosítókkal is címkézett bázisállomások"><span id="count.cellid"></span> ~ cella-azonosítókkal</div>
 			<div lang="hu" title="bázisállomásokhoz kapcsolt cellák (gsm, umts, lte)"><span id="count.unique.cellid"></span> cella</div>
 		</div>
-		<a href="#lang-en" onclick="window.lang.change('en'); console.log(sites); console.log(sites); return false;">english</a> | <a href="#lang-hu" onclick="window.lang.change('hu'); return false;">hungarian</a>
+		<div>
+			<a href="#lang-en" onclick="window.lang.change('en'); console.log(sites); console.log(sites); return false;">english</a>
+			|
+			<a href="#lang-hu" onclick="window.lang.change('hu'); return false;">hungarian</a>
+		</div>
+		<div>
+			<a href="http://kolesar.turistautak.hu/osm/opencellid/geojson/overpass.geojson">geojson</a>
+			|
+			<a href="http://kolesar.turistautak.hu/osm/opencellid/geojson/overpass.kml">kml</a>
+		</div>
 	</div>
 	<div id="map" class="map">
 		<div id="popup-wrapper">
