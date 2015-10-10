@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="en">
+<html lang="hu">
 <head>
-	<meta charset="UTF-8">
+	<meta charset="utf-8">
 	<link rel="stylesheet" href="lib/ol/css/ol.css" type="text/css">
 	<link rel="stylesheet" href="lib/ol/css/ol3-layerswitcher.css" type="text/css">
 	<style>
@@ -91,9 +91,16 @@
 		}
 	</style>
 	<script src="lib/jquery.min.js" type="text/javascript"></script>
+	<script src="lib/jquery-cookie.js" type="text/javascript"></script>
+	<script src="lib/jquery-lang.js" type="text/javascript"></script>
+	<script src="js/lang.js" type="text/javascript"></script>
 	<script src="lib/ol/build/ol.js" type="text/javascript"></script>
 	<script src="lib/ol/build/ol3-layerswitcher.js" type="text/javascript"></script>
-	<title>cellavadász</title>
+	<script type="text/javascript">
+		var userLang = navigator.language || navigator.userLanguage;
+		var lang = new Lang('hu', userLang.substring(0, 2) == 'hu' ? 'hu' : 'en', true);
+	</script>
+	<title lang="hu">cellavadász</title>
 </head>
 <body>
 	<div id="sarok">
@@ -101,17 +108,18 @@
 			<div><img src="img/01.svg" /><input type="checkbox" id="checkbox.telenor" onclick="clickOperator()"/> <label for="checkbox.telenor">Telenor</label></div>
 			<div><img src="img/30.svg" /><input type="checkbox" id="checkbox.telekom" onclick="clickOperator()"/> <label for="checkbox.telekom">Telekom</label></div>
 			<div><img src="img/70.svg" /><input type="checkbox" id="checkbox.vodafone" onclick="clickOperator()"/> <label for="checkbox.vodafone">Vodafone</label></div>
-			<div title="bázisállomás ismeretlen szolgáltatóval"><img src="img/00.svg" /><input type="checkbox" id="checkbox.unknown" onclick="clickOperator()"/> <label for="checkbox.unknown">ismeretlen</label></div>
-			<div title="torony, amelyől nem tudjuk, hogy bázisállomás-e"><img src="img/nosite.svg" /><input type="checkbox" id="checkbox.nosite" onclick="clickOperator()"/> <label for="checkbox.nosite">torony</label></div>
+			<div lang="hu" title="bázisállomás egyelőre meghatározatlan szolgáltatóval"><img src="img/00.svg" /><input type="checkbox" id="checkbox.unknown" onclick="clickOperator()"/> <label lang="hu" for="checkbox.unknown">ismeretlen</label></div>
+			<div lang="hu" title="torony, amelyől még nem tudjuk, hogy bázisállomás-e"><img src="img/nosite.svg" /><input type="checkbox" id="checkbox.nosite" onclick="clickOperator()"/> <label lang="hu" for="checkbox.nosite">torony</label></div>
 		</div>
 		<div id="count">
-			<div title="tornyok összesen (víztornyokkal, kéményekkel együtt)"><span id="count.all"></span> torony</div>
-			<div title="bázisállomásként címkézett tornyok"><span id="count.site"></span> bázisállomás</div>
-			<div title="szolgáltatóval címkézett bázisállomások"><span id="count.operator"></span> szolgáltatóval</div>
-			<div title="bázisállomások összesen (közösek külön-külön számítva)"><span id="count.unique.site"></span> szolgáltatókra bontva</div>
-			<div title="cella-azonosítókkal is címkézett bázisállomások"><span id="count.cellid"></span> cella-azonosítókkal</div>
-			<div title="cellák összesen (gsm, umts, lte)"><span id="count.unique.cellid"></span> cella</div>
+			<div lang="hu" title="tornyok összesen (víztornyokkal, kéményekkel együtt)"><span id="count.all"></span> torony</div>
+			<div lang="hu" title="bázisállomásként címkézett tornyok"><span id="count.site"></span> bázisállomás</div>
+			<div lang="hu" title="szolgáltatóval címkézett bázisállomások"><span id="count.operator"></span> ~ szolgáltatóval</div>
+			<div lang="hu" title="bázisállomások összesen (közösek külön-külön számítva)"><span id="count.unique.site"></span> ~ szolgáltatókra bontva</div>
+			<div lang="hu" title="cella-azonosítókkal is címkézett bázisállomások"><span id="count.cellid"></span> ~ cella-azonosítókkal</div>
+			<div lang="hu" title="bázisállomásokhoz kapcsolt cellák (gsm, umts, lte)"><span id="count.unique.cellid"></span> cella</div>
 		</div>
+		<a href="#lang-en" onclick="window.lang.change('en'); return false;">english</a> | <a href="#lang-hu" onclick="window.lang.change('hu'); return false;">hungarian</a>
 	</div>
 	<div id="map" class="map">
 		<div id="popup" class="ol-popup">
