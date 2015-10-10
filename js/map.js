@@ -18,7 +18,7 @@ $(document).ready(function () {
 			if (display.telekom && is.telekom) operators.push('30');
 			if (display.vodafone && is.vodafone) operators.push('70');
 			if (display.unknown && is.unknown) operators.push('00');
-			if (display.nosite && !is.site) operators.push('nosite');
+			if (display.nosite && !is.site && !operators.length) operators.push('nosite');
 
 			if (!operators.length) return;
 
