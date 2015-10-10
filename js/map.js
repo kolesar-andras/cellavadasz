@@ -92,7 +92,8 @@ $(document).ready(function () {
 
 	overlay = new ol.Overlay({
 		element: container,
-		positioning: 'bottom-center'
+		positioning: 'bottom-center',
+		autoPan: true
 	});
 	map.addOverlay(overlay);
 
