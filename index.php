@@ -99,6 +99,21 @@
 	<script type="text/javascript">
 		var userLang = navigator.language || navigator.userLanguage;
 		var lang = new Lang('hu', userLang.substring(0, 2) == 'hu' ? 'hu' : 'en', true);
+		
+		// update map on language change
+		$(lang).on('afterUpdate', function () {
+			$.each(map.getLayers().getArray(), function (index, layer) {
+				var update = {};
+				var title = layer.getProperties().title;
+				if (!layer.getProperties().defaulttitle) {
+					update.defaulttitle = title;
+				} else {
+					title = layer.getProperties().defaulttitle;
+				}
+				update.title = lang.translate(title);
+				layer.setProperties(update);
+			});
+		});
 	</script>
 	<title lang="hu">cellavadász</title>
 </head>
@@ -119,7 +134,7 @@
 			<div lang="hu" title="cella-azonosítókkal is címkézett bázisállomások"><span id="count.cellid"></span> ~ cella-azonosítókkal</div>
 			<div lang="hu" title="bázisállomásokhoz kapcsolt cellák (gsm, umts, lte)"><span id="count.unique.cellid"></span> cella</div>
 		</div>
-		<a href="#lang-en" onclick="window.lang.change('en'); return false;">english</a> | <a href="#lang-hu" onclick="window.lang.change('hu'); return false;">hungarian</a>
+		<a href="#lang-en" onclick="window.lang.change('en'); console.log(sites); console.log(sites); return false;">english</a> | <a href="#lang-hu" onclick="window.lang.change('hu'); return false;">hungarian</a>
 	</div>
 	<div id="map" class="map">
 		<div id="popup" class="ol-popup">
@@ -304,13 +319,13 @@
 						 url: 'http://a.map.turistautak.hu/tiles/osm/{z}/{x}/{y}.png'
 					}),
 					type: 'base',
-					title: 'turistatérkép'
+					title: 'turistatérkép (OSM)'
 				}),
 
 				new ol.layer.Tile({
 					source: new ol.source.OSM(),
 					type: 'base',
-					title: 'mapnik'
+					title: 'OpenStreetMap (mapnik)'
 				}),
 
 				new ol.layer.Tile({
