@@ -8,6 +8,10 @@ html, body, .map {
 
 a, a:link, a:visited, a:hover, a:active { color: #404040; }
 
+#popup-wrapper {
+	display: none;
+}
+
 .ol-popup {
 	position: absolute;
 	background-color: white;
