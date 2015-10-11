@@ -2,6 +2,7 @@
 <html lang="hu">
 <head>
 	<meta charset="utf-8">
+	<link rel="icon" type="image/x-icon" href="img/favicon.ico" />
 	<link rel="stylesheet" href="lib/ol/css/ol.css" type="text/css">
 	<link rel="stylesheet" href="lib/ol/css/ol3-layerswitcher.css" type="text/css">
 	<link rel="stylesheet" href="css/page.css" type="text/css">
