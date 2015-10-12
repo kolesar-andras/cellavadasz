@@ -17,10 +17,10 @@ a, a:link, a:visited, a:hover, a:active { color: #404040; }
 	background-color: white;
 	-webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
 	filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-	padding: 15px;
+	padding: 10px;
 	bottom: 12px;
 	left: -50px;
-	width: 250px;
+	width: 320px;
 }
 .ol-popup:after, .ol-popup:before {
 	top: 100%;
@@ -47,8 +47,8 @@ a, a:link, a:visited, a:hover, a:active { color: #404040; }
 	text-decoration: none;
 	color: #000000;
 	position: absolute;
-	top: 2px;
-	right: 8px;
+	top: 4px;
+	right: 6px;
 }
 .ol-popup-closer:after {
 	content: "✖";
@@ -101,4 +101,8 @@ a, a:link, a:visited, a:hover, a:active { color: #404040; }
 	width: 125px;
 	height: 125px;
 	z-index: 2000;
+}
+
+#popup img {
+	margin-top: 10px;
 }

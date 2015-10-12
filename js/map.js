@@ -126,6 +126,11 @@ $(document).ready(function () {
 		for (k in prop) {
 			html += k + '=' + prop[k] + "<br/>\n";
 		}
+		if (prop['mapillary']) {
+			html += '<a href="http://www.mapillary.com/map/im/'+prop['mapillary']+'">';
+			html += '<img src="https://d1cuyjsrcm0gby.cloudfront.net/'+prop['mapillary']+'/thumb-320.jpg" />';
+			html += '</a>' + "\n";
+		}
 		content.innerHTML = html;
 		overlay.setPosition(coordinate);
 	});
