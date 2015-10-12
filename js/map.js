@@ -1,3 +1,5 @@
+var shouldUpdate = true;
+
 $(document).ready(function () {
 
 	source = new ol.source.GeoJSON(({
@@ -35,6 +37,11 @@ $(document).ready(function () {
 		title: 'bázisállomások'
 	});
 
+	var hash = fetchHash() || {
+		zoom: 8,
+		center: ol.proj.transform([19.5, 47.2], 'EPSG:4326', 'EPSG:3857')
+	};
+
 	map = new ol.Map({
 		target: 'map',
 		layers: [
@@ -69,11 +76,7 @@ $(document).ready(function () {
 			sites
 
 		],
-		view: new ol.View({
-			center: ol.proj.transform([19.5, 47.2], 'EPSG:4326', 'EPSG:3857'),
-			zoom: 8
-		})
-
+		view: new ol.View(hash)
 	});
 
 	layerSwitcher = new ol.control.LayerSwitcher();
@@ -142,6 +145,51 @@ $(document).ready(function () {
 		if (key.replace) key = key.replace(':', ':<wbr />');
 		if (value.replace) value = value.replace(new RegExp(';', 'g'), ';<wbr />');
 		return '<tr><td>'+key+'</td><td>'+value+'</td></tr>\n';
+	}
+
+	map.on('moveend', function() {
+		var view = map.getView();
+		var zoom = view.getZoom();
+		var center = view.getCenter();
+		center = ol.proj.transform(center, 'EPSG:3857', 'EPSG:4326');
+		var hash =
+		'#map='+ zoom + '/' + roundCoord(center[1], zoom) + '/' + roundCoord(center[0], zoom);
+		if (window.location.hash != hash)
+			window.location.hash = hash;
+	});
+
+	function fetchHash () {
+		if (window.location.hash !== '') {
+			var hash = window.location.hash.replace('#map=', '');
+			var parts = hash.split('/');
+			if (parts.length === 3) {
+				return {
+					zoom: parseInt(parts[0], 10),
+					center: ol.proj.transform([
+						parseFloat(parts[2]),
+						parseFloat(parts[1])
+					], 'EPSG:4326', 'EPSG:3857')
+				};
+			}
+		}
+	}
+
+	$(window).on('hashchange', function () {
+		var hash = fetchHash();
+		if (!hash) return;
+		var view = map.getView();
+		view.setCenter(hash.center);
+		view.setZoom(hash.zoom);
+	});
+
+	function roundCoord (coord, zoom) {
+		d = 0;
+		if (zoom >= 17) d = 5; else
+		if (zoom >= 9) d = 4; else
+		if (zoom >= 5) d = 3; else
+		if (zoom >= 3) d = 2; else
+		if (zoom >= 2) d = 1;
+		return coord.toFixed(d);
 	}
 
 });
