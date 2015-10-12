@@ -5,13 +5,7 @@ var count = {
 	cellid: 0
 };
 
-var display = {
-	telenor: true,
-	telekom: true,
-	vodafone: true,
-	unknown: true,
-	nosite: true
-};
+var display = {};
 
 function hasCellId (feature) {
 	return !(
@@ -50,20 +44,16 @@ function getCount (value) {
 }
 
 function clickOperator () {
+	sites.changed();
+	refreshMap();
+}
+
+function refreshMap () {
 	display.telenor = document.getElementById('checkbox.telenor').checked;
 	display.telekom = document.getElementById('checkbox.telekom').checked;
 	display.vodafone = document.getElementById('checkbox.vodafone').checked;
 	display.unknown = document.getElementById('checkbox.unknown').checked;
 	display.nosite = document.getElementById('checkbox.nosite').checked;
-	var checked = display.telenor || display.telekom || display.vodafone || display.unknown || display.nosite;
-	if (!checked) {
-		display.telenor = true;
-		display.telekom = true;
-		display.vodafone = true;
-		display.unknown = true;
-		display.nosite = true;
-	}
-	sites.changed();
 	countCells();
 }
 
