@@ -113,7 +113,15 @@ a, a:link, a:visited, a:hover, a:active {
 	width: 100%;
 }
 
+#popup tr {
+	vertical-align: top;
+}
+
 #popup td {
     border: 1px solid #e0e0e0;
     padding: 0 1px;
+}
+
+#popup tr td:first-child {
+	font-weight: bold;
 }
