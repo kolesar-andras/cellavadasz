@@ -79,7 +79,7 @@
 	<div id="map" class="map">
 		<div id="popup-wrapper">
 			<div id="popup" class="ol-popup">
-				<a href="#" id="popup-closer" class="ol-popup-closer"></a>
+				<a href="#" id="popup-closer" class="ol-popup-closer"><img src="img/close.png" /></a>
 				<div id="popup-content"></div>
 			</div>
 		</div>

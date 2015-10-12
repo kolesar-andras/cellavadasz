@@ -6,10 +6,17 @@ html, body, .map {
 	font-size: 12px;
 }
 
-a, a:link, a:visited, a:hover, a:active { color: #404040; }
+a, a:link, a:visited, a:hover, a:active {
+	color: #404040;
+	text-decoration: none;
+}
 
 #popup-wrapper {
 	display: none;
+}
+
+#popup-content {
+	padding: 10px;
 }
 
 .ol-popup {
@@ -17,10 +24,9 @@ a, a:link, a:visited, a:hover, a:active { color: #404040; }
 	background-color: white;
 	-webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
 	filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-	padding: 10px;
 	bottom: 12px;
 	left: -50px;
-	width: 320px;
+	width: 340px;
 }
 .ol-popup:after, .ol-popup:before {
 	top: 100%;
@@ -44,14 +50,9 @@ a, a:link, a:visited, a:hover, a:active { color: #404040; }
 	margin-left: -11px;
 }
 .ol-popup-closer {
-	text-decoration: none;
-	color: #000000;
 	position: absolute;
-	top: 4px;
-	right: 6px;
-}
-.ol-popup-closer:after {
-	content: "✖";
+	top: 0;
+	right: 0;
 }
 
 .ol-attribution ul {
@@ -103,6 +104,16 @@ a, a:link, a:visited, a:hover, a:active { color: #404040; }
 	z-index: 2000;
 }
 
-#popup img {
+#popup-content img {
 	margin-top: 10px;
+}
+
+#popup table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+#popup td {
+    border: 1px solid #e0e0e0;
+    padding: 0 1px;
 }

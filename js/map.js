@@ -113,26 +113,34 @@ $(document).ready(function () {
 		var coordinate = evt.coordinate;
 
 		var html = '';
-		html += 'id=<a href="http://openstreetmap.org/node/'+feature.get('id')+'">'+feature.get('id')+'</a>'+"<br/>\n";
-		html += 'user=<a href="http://openstreetmap.org/user/'+feature.get('user')+'">'+feature.get('user')+'</a>'+"<br/>\n";
-		html += 'changeset=<a href="http://openstreetmap.org/changeset/'+feature.get('changeset')+'">'+feature.get('changeset')+'</a>'+"<br/>\n";
+		html += '<table>\n';
+		html += row('id', '<a href="http://openstreetmap.org/node/'+feature.get('id')+'">'+feature.get('id')+'</a>');
+		html += row('user', '<a href="http://openstreetmap.org/user/'+feature.get('user')+'">'+feature.get('user')+'</a>');
+		html += row('changeset', '<a href="http://openstreetmap.org/changeset/'+feature.get('changeset')+'">'+feature.get('changeset')+'</a>');
 		var prop = feature.n;
 		for (k in prop) {
 			if (['timestamp', 'version'].indexOf(k) == -1) continue;
 			if (typeof(prop[k]) === 'undefined') continue;
-			html += k + '=' + prop[k] + "<br/>\n";
+			html += row(k, prop[k]);
 		}
 		var prop = feature.n.tags; // feature.getAttributes();
 		for (k in prop) {
-			html += k + '=' + prop[k] + "<br/>\n";
+			html += row(k, prop[k]);
 		}
+		html += '</table>\n';
 		if (prop['mapillary']) {
 			html += '<a href="http://www.mapillary.com/map/im/'+prop['mapillary']+'">';
 			html += '<img src="https://d1cuyjsrcm0gby.cloudfront.net/'+prop['mapillary']+'/thumb-320.jpg" />';
-			html += '</a>' + "\n";
+			html += '</a>\n';
 		}
 		content.innerHTML = html;
 		overlay.setPosition(coordinate);
 	});
+
+	function row (key, value) {
+		if (key == 'mapillary') value = '<a href="http://www.mapillary.com/map/im/'+value+'">'+value+'</a>';
+		key = key.replace(':', ':<wbr />');
+		return '<tr><td>'+key+'</td><td>'+value+'</td></tr>\n';
+	}
 
 });
