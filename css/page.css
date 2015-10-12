@@ -51,8 +51,8 @@ a, a:link, a:visited, a:hover, a:active {
 }
 .ol-popup-closer {
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: -16px;
+	right: -16px;
 }
 
 .ol-attribution ul {
