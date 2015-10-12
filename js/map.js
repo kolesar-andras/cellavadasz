@@ -173,18 +173,36 @@ $(document).ready(function () {
 		var hash = window.location.hash;
 		if (hash == '') hash = defaultHash;
 		if (hash == '') return;
-		var hash = hash.replace('#map=', '');
-		var parts = hash.split('/');
-		if (parts.length === 3) {
-			var zoom = parseInt(parts[0], 10);
-			var center = ol.proj.transform([
-					parseFloat(parts[2]),
-					parseFloat(parts[1])
-				], 'EPSG:4326', 'EPSG:3857');
-			var view = map.getView();
-			view.setCenter(center);
-			view.setZoom(zoom);
+		var args = parseHash(hash);
+		if (args.map) {
+			var parts = args.map.split('/');
+			if (parts.length === 3) {
+				var zoom = parseInt(parts[0], 10);
+				var center = ol.proj.transform([
+						parseFloat(parts[2]),
+						parseFloat(parts[1])
+					], 'EPSG:4326', 'EPSG:3857');
+				var view = map.getView();
+				view.setCenter(center);
+				view.setZoom(zoom);
+			}
 		}
+	}
+
+	function parseHash (hash) {
+		if (hash.charAt(0) == '#') hash = hash.substring(1);
+		var args = hash.split('&');
+		var argsParsed = {};
+		for (i=0; i < args.length; i++) {
+			var arg = decodeURIComponent(args[i]);
+			if (arg.indexOf('=') == -1) {
+				argsParsed[arg.trim()] = true;
+			} else {
+				var kvp = arg.split('=');
+				argsParsed[kvp[0].trim()] = kvp[1].trim();
+			}
+		}
+		return argsParsed;
 	}
 
 	$(window).on('hashchange', getHash);
