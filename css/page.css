@@ -93,3 +93,12 @@ a, a:link, a:visited, a:hover, a:active { color: #404040; }
 	margin: -18px -18px -18px -18px;
 	pointer-events: none;
 }
+
+#loader {
+	margin: auto;
+	position: absolute;
+	top: 0; left: 0; bottom: 0; right: 0;
+	width: 125px;
+	height: 125px;
+	z-index: 2000;
+}

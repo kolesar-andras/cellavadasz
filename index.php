@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="lib/ol/css/ol.css" type="text/css">
 	<link rel="stylesheet" href="lib/ol/css/ol3-layerswitcher.css" type="text/css">
 	<link rel="stylesheet" href="css/page.css" type="text/css">
+	<link rel="stylesheet" href="css/loader.css" type="text/css">
 	<script src="lib/jquery.min.js" type="text/javascript"></script>
 	<script src="lib/jquery-cookie.js" type="text/javascript"></script>
 	<script src="lib/jquery-lang.js" type="text/javascript"></script>
@@ -17,7 +18,7 @@
 	<script type="text/javascript">
 		var userLang = navigator.language || navigator.userLanguage;
 		var lang = new Lang('hu', userLang.substring(0, 2) == 'hu' ? 'hu' : 'en', true);
-		
+
 		// update map on language change
 		$(lang).on('afterUpdate', function () {
 			$.each(map.getLayers().getArray(), function (index, layer) {
@@ -36,6 +37,18 @@
 	<title lang="hu">cellavadász</title>
 </head>
 <body>
+	<div id="loader">
+		<div id="floatingCirclesG">
+			<div class="f_circleG" id="frotateG_01"></div>
+			<div class="f_circleG" id="frotateG_02"></div>
+			<div class="f_circleG" id="frotateG_03"></div>
+			<div class="f_circleG" id="frotateG_04"></div>
+			<div class="f_circleG" id="frotateG_05"></div>
+			<div class="f_circleG" id="frotateG_06"></div>
+			<div class="f_circleG" id="frotateG_07"></div>
+			<div class="f_circleG" id="frotateG_08"></div>
+		</div>
+	</div>
 	<div id="sarok">
 		<div id="operators">
 			<div><img src="img/01.svg" /><input type="checkbox" id="checkbox.telenor" onclick="clickOperator()"/> <label for="checkbox.telenor">Telenor</label></div>

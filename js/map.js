@@ -7,7 +7,10 @@ $(document).ready(function () {
 		},
 		url: 'http://kolesar.turistautak.hu/osm/opencellid/geojson/overpass.geojson'
 	}));
-	source.once('change', countCells);
+	source.once('change', function () {
+		countCells();
+		$('#loader').hide();
+	});
 
 	sites = new ol.layer.Vector({
 		source: source,
