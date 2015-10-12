@@ -5,7 +5,13 @@ var count = {
 	cellid: 0
 };
 
-var display = {};
+var display = {
+	telenor: true,
+	telekom: true,
+	vodafone: true,
+	unknown: false,
+	nosite: false
+};
 
 function hasCellId (feature) {
 	return !(
@@ -48,13 +54,26 @@ function clickOperator () {
 	refreshMap();
 }
 
-function refreshMap () {
+function getCheckboxes () {
 	display.telenor = document.getElementById('checkbox.telenor').checked;
 	display.telekom = document.getElementById('checkbox.telekom').checked;
 	display.vodafone = document.getElementById('checkbox.vodafone').checked;
 	display.unknown = document.getElementById('checkbox.unknown').checked;
 	display.nosite = document.getElementById('checkbox.nosite').checked;
+}
+
+function setCheckboxes () {
+	document.getElementById('checkbox.telenor').checked = display.telenor;
+	document.getElementById('checkbox.telekom').checked = display.telekom;
+	document.getElementById('checkbox.vodafone').checked = display.vodafone;
+	document.getElementById('checkbox.unknown').checked = display.unknown;
+	document.getElementById('checkbox.nosite').checked = display.nosite;
+}
+
+function refreshMap () {
+	getCheckboxes();
 	countCells();
+	setHash();
 }
 
 function getOperatorArray (feature) {
@@ -135,3 +154,79 @@ function countCells () {
 
 	document.getElementById('sarok').style.visibility = 'visible';
 }
+
+function roundCoord (coord, zoom) {
+	d = 0;
+	if (zoom >= 17) d = 5; else
+	if (zoom >= 9) d = 4; else
+	if (zoom >= 5) d = 3; else
+	if (zoom >= 3) d = 2; else
+	if (zoom >= 2) d = 1;
+	return coord.toFixed(d);
+}
+
+function parseHash (hash) {
+	if (hash.charAt(0) == '#') hash = hash.substring(1);
+	var args = hash.split('&');
+	var argsParsed = {};
+	for (i=0; i < args.length; i++) {
+		var arg = decodeURIComponent(args[i]);
+		var kvp = arg.split('=');
+		var key = kvp[0].trim();
+		if (kvp.length == 1) {
+			if (key.charAt(0) == '!') {
+				argsParsed[key.substring(1)] = false;
+			} else {
+				argsParsed[key] = true;
+			}
+		} else {
+			argsParsed[key] = kvp.slice(1).join('=').trim();
+		}
+	}
+	return argsParsed;
+}
+
+function getHash (defaultHash) {
+	var hash = window.location.hash;
+	if (hash == '') hash = defaultHash;
+	if (hash == '') return;
+	var args = parseHash(hash);
+	if (args.map) {
+		var parts = args.map.split('/');
+		if (parts.length === 3) {
+			var zoom = parseInt(parts[0], 10);
+			var center = ol.proj.transform([
+					parseFloat(parts[2]),
+					parseFloat(parts[1])
+				], 'EPSG:4326', 'EPSG:3857');
+			var view = map.getView();
+			view.setCenter(center);
+			view.setZoom(zoom);
+		}
+	}
+	var displayOriginal = JSON.stringify(display);
+	$.each(display, function (key, value) {
+		display[key] = (key in args) ? args[key] : false;
+	});
+	if (JSON.stringify(display) != displayOriginal) {
+		setCheckboxes();
+		clickOperator();
+	}
+}
+
+function setHash () {
+	var view = map.getView();
+	var zoom = view.getZoom();
+	var center = view.getCenter();
+	center = ol.proj.transform(center, 'EPSG:3857', 'EPSG:4326');
+	var hash = [];
+	hash.push('map='+ zoom + '/' + roundCoord(center[1], zoom) + '/' + roundCoord(center[0], zoom));
+	$.each(display, function (key, value) {
+		if (value) hash.push(key);
+	});
+	hashString = '#'+hash.join('&');
+	if (window.location.hash != hashString)
+		window.location.hash = hashString;
+}
+
+$(window).on('hashchange', getHash);

@@ -1,4 +1,5 @@
 var keephash = false;
+var map;
 
 $(document).ready(function () {
 
@@ -68,7 +69,9 @@ $(document).ready(function () {
 	});
 
 	keephash = true;
-	getHash('#map=8/47.2/19.5');
+
+	getHash('#map=8/47.2/19.5&telenor&telekom&vodafone');
+	setCheckboxes();
 
 	layerSwitcher = new ol.control.LayerSwitcher();
 	map.addControl(layerSwitcher);
@@ -157,64 +160,5 @@ $(document).ready(function () {
 		}
 		setHash();
 	});
-
-	function setHash () {
-		var view = map.getView();
-		var zoom = view.getZoom();
-		var center = view.getCenter();
-		center = ol.proj.transform(center, 'EPSG:3857', 'EPSG:4326');
-		var hash =
-		'#map='+ zoom + '/' + roundCoord(center[1], zoom) + '/' + roundCoord(center[0], zoom);
-		if (window.location.hash != hash)
-			window.location.hash = hash;
-	}
-
-	function getHash (defaultHash) {
-		var hash = window.location.hash;
-		if (hash == '') hash = defaultHash;
-		if (hash == '') return;
-		var args = parseHash(hash);
-		if (args.map) {
-			var parts = args.map.split('/');
-			if (parts.length === 3) {
-				var zoom = parseInt(parts[0], 10);
-				var center = ol.proj.transform([
-						parseFloat(parts[2]),
-						parseFloat(parts[1])
-					], 'EPSG:4326', 'EPSG:3857');
-				var view = map.getView();
-				view.setCenter(center);
-				view.setZoom(zoom);
-			}
-		}
-	}
-
-	function parseHash (hash) {
-		if (hash.charAt(0) == '#') hash = hash.substring(1);
-		var args = hash.split('&');
-		var argsParsed = {};
-		for (i=0; i < args.length; i++) {
-			var arg = decodeURIComponent(args[i]);
-			if (arg.indexOf('=') == -1) {
-				argsParsed[arg.trim()] = true;
-			} else {
-				var kvp = arg.split('=');
-				argsParsed[kvp[0].trim()] = kvp[1].trim();
-			}
-		}
-		return argsParsed;
-	}
-
-	$(window).on('hashchange', getHash);
-
-	function roundCoord (coord, zoom) {
-		d = 0;
-		if (zoom >= 17) d = 5; else
-		if (zoom >= 9) d = 4; else
-		if (zoom >= 5) d = 3; else
-		if (zoom >= 3) d = 2; else
-		if (zoom >= 2) d = 1;
-		return coord.toFixed(d);
-	}
 
 });

@@ -51,9 +51,9 @@
 	</div>
 	<div id="sarok">
 		<div id="operators">
-			<div><img src="img/01.svg" /><input type="checkbox" id="checkbox.telenor" onclick="clickOperator()" checked="checked"/> <label for="checkbox.telenor">Telenor</label></div>
-			<div><img src="img/30.svg" /><input type="checkbox" id="checkbox.telekom" onclick="clickOperator()" checked="checked"/> <label for="checkbox.telekom">Telekom</label></div>
-			<div><img src="img/70.svg" /><input type="checkbox" id="checkbox.vodafone" onclick="clickOperator()" checked="checked"/> <label for="checkbox.vodafone">Vodafone</label></div>
+			<div><img src="img/01.svg" /><input type="checkbox" id="checkbox.telenor" onclick="clickOperator()""/> <label for="checkbox.telenor">Telenor</label></div>
+			<div><img src="img/30.svg" /><input type="checkbox" id="checkbox.telekom" onclick="clickOperator()""/> <label for="checkbox.telekom">Telekom</label></div>
+			<div><img src="img/70.svg" /><input type="checkbox" id="checkbox.vodafone" onclick="clickOperator()""/> <label for="checkbox.vodafone">Vodafone</label></div>
 			<div lang="hu" title="bázisállomás egyelőre meghatározatlan szolgáltatóval"><img src="img/00.svg" /><input type="checkbox" id="checkbox.unknown" onclick="clickOperator()"/> <label lang="hu" for="checkbox.unknown">ismeretlen</label></div>
 			<div lang="hu" title="torony, amelyől még nem tudjuk, hogy bázisállomás-e"><img src="img/nosite.svg" /><input type="checkbox" id="checkbox.nosite" onclick="clickOperator()"/> <label lang="hu" for="checkbox.nosite">torony</label></div>
 		</div>
