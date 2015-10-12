@@ -1,4 +1,4 @@
-var shouldUpdate = true;
+var keephash = false;
 
 $(document).ready(function () {
 
@@ -29,11 +29,6 @@ $(document).ready(function () {
 
 		title: 'bázisállomások'
 	});
-
-	var hash = fetchHash() || {
-		zoom: 8,
-		center: ol.proj.transform([19.5, 47.2], 'EPSG:4326', 'EPSG:3857')
-	};
 
 	map = new ol.Map({
 		target: 'map',
@@ -69,8 +64,11 @@ $(document).ready(function () {
 			sites
 
 		],
-		view: new ol.View(hash)
+		view: new ol.View()
 	});
+
+	keephash = true;
+	getHash('#map=8/47.2/19.5');
 
 	layerSwitcher = new ol.control.LayerSwitcher();
 	map.addControl(layerSwitcher);
@@ -153,6 +151,14 @@ $(document).ready(function () {
 	}
 
 	map.on('moveend', function() {
+		if (keephash) {
+			keephash = false;
+			return;
+		}
+		setHash();
+	});
+
+	function setHash () {
 		var view = map.getView();
 		var zoom = view.getZoom();
 		var center = view.getCenter();
@@ -161,31 +167,27 @@ $(document).ready(function () {
 		'#map='+ zoom + '/' + roundCoord(center[1], zoom) + '/' + roundCoord(center[0], zoom);
 		if (window.location.hash != hash)
 			window.location.hash = hash;
-	});
+	}
 
-	function fetchHash () {
-		if (window.location.hash !== '') {
-			var hash = window.location.hash.replace('#map=', '');
-			var parts = hash.split('/');
-			if (parts.length === 3) {
-				return {
-					zoom: parseInt(parts[0], 10),
-					center: ol.proj.transform([
-						parseFloat(parts[2]),
-						parseFloat(parts[1])
-					], 'EPSG:4326', 'EPSG:3857')
-				};
-			}
+	function getHash (defaultHash) {
+		var hash = window.location.hash;
+		if (hash == '') hash = defaultHash;
+		if (hash == '') return;
+		var hash = hash.replace('#map=', '');
+		var parts = hash.split('/');
+		if (parts.length === 3) {
+			var zoom = parseInt(parts[0], 10);
+			var center = ol.proj.transform([
+					parseFloat(parts[2]),
+					parseFloat(parts[1])
+				], 'EPSG:4326', 'EPSG:3857');
+			var view = map.getView();
+			view.setCenter(center);
+			view.setZoom(zoom);
 		}
 	}
 
-	$(window).on('hashchange', function () {
-		var hash = fetchHash();
-		if (!hash) return;
-		var view = map.getView();
-		view.setCenter(hash.center);
-		view.setZoom(hash.zoom);
-	});
+	$(window).on('hashchange', getHash);
 
 	function roundCoord (coord, zoom) {
 		d = 0;
