@@ -17,14 +17,7 @@ $(document).ready(function () {
 	sites = new ol.layer.Vector({
 		source: source,
 		style: function(feature, resolution) {
-			is = getOperators(feature);
-			var operators = [];
-			if (display.telenor && is.telenor) operators.push('01');
-			if (display.telekom && is.telekom) operators.push('30');
-			if (display.vodafone && is.vodafone) operators.push('70');
-			if (display.unknown && is.unknown) operators.push('00');
-			if (display.nosite && !is.site && !operators.length) operators.push('nosite');
-
+			var operators = getOperatorArray(feature);
 			if (!operators.length) return;
 
 			var small = !hasCellId(feature) ? '.small' : '';
@@ -105,15 +98,27 @@ $(document).ready(function () {
 
 	// display popup on click
 	map.on('click', function(evt) {
-		var feature = map.forEachFeatureAtPixel(
-			[evt.pixel[0]-5, evt.pixel[1]],
-			function(feature, layer) {
-				return feature;
-			});
+		var c0 = map.getPixelFromCoordinate(evt.coordinate);
+		var distance = null;
+		var feature = null;
+		source.forEachFeature(function (f) {
+			var operators = getOperatorArray(f);
+			if (!operators.length) return; // exclude invisible
+
+			var c1 = map.getPixelFromCoordinate(f.getGeometry().getCoordinates());
+			var d = Math.sqrt(
+				Math.pow(c1[0]-c0[0], 2) +
+				Math.pow(c1[1]-c0[1], 2)
+			);
+			if (d > 12) return;
+			if (distance === null || d<distance) {
+				distance = d;
+				feature = f;
+			}
+		});
 		if (!feature) return;
 		var geometry = feature.getGeometry();
 		var coord = geometry.getCoordinates();
-		var coordinate = evt.coordinate;
 
 		var html = '';
 		html += '<table>\n';
@@ -137,7 +142,7 @@ $(document).ready(function () {
 			html += '</a>\n';
 		}
 		content.innerHTML = html;
-		overlay.setPosition(coordinate);
+		overlay.setPosition(coord);
 	});
 
 	function row (key, value) {

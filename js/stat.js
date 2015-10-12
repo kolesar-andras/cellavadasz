@@ -57,6 +57,19 @@ function refreshMap () {
 	countCells();
 }
 
+function getOperatorArray (feature) {
+
+	is = getOperators(feature);
+	var operators = [];
+	if (display.telenor && is.telenor) operators.push('01');
+	if (display.telekom && is.telekom) operators.push('30');
+	if (display.vodafone && is.vodafone) operators.push('70');
+	if (display.unknown && is.unknown) operators.push('00');
+	if (display.nosite && !is.site && !operators.length) operators.push('nosite');
+	return operators;
+
+}
+
 function getOperators(feature) {
 	var operator = feature.n.tags.operator;
 	var is = {};
