@@ -226,6 +226,13 @@ function getHash () {
 		setCheckboxes();
 		clickOperator();
 	}
+
+	if ('id' in args) {
+		featureClicked = args.id;
+		popupFeatureId(featureClicked);
+	} else if (featureClicked) {
+		closePopup();
+	}
 }
 
 function setHash () {
@@ -234,11 +241,15 @@ function setHash () {
 	if (h !== null) hash.push(h);
 	h = hashForOperator();
 	if (h !== null) hash.push(h);
+	h = hashForFeature();
+	if (h !== null) hash.push(h);
 	hashNew = '#'+hash.join('&');
 	hashOld = window.location.hash;
 	if (hashOld === '') hashOld = '#';
-	if (hashOld != hashNew)
+	if (hashOld != hashNew) {
+		hashSelfUpdated = true;
 		window.location.hash = hashNew;
+	}
 }
 
 function hashForMap () {
@@ -260,4 +271,15 @@ function hashForOperator () {
 	return 'operator='+operator.join(';');
 }
 
-$(window).on('hashchange', getHash);
+function hashForFeature () {
+	if (!featureClicked) return null;
+	return 'id=' + featureClicked;
+}
+
+$(window).on('hashchange', function () {
+	if (hashSelfUpdated) {
+		hashSelfUpdated = false;
+		return;
+	}
+	getHash();
+});

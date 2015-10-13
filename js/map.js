@@ -1,6 +1,10 @@
 var map;
 var isMapDefault = true; // map is at default view
 var mapHashDefault = null; // hash of default view
+var hashSelfUpdated = false; // hash was updated by script
+var featureClicked = null; // osm id of feature clicked
+var overlay;
+var closer;
 
 $(document).ready(function () {
 
@@ -14,6 +18,7 @@ $(document).ready(function () {
 	source.once('change', function () {
 		refreshMap();
 		$('#loader').hide();
+		popupFeatureId(featureClicked);
 	});
 
 	sites = new ol.layer.Vector({
@@ -83,11 +88,7 @@ $(document).ready(function () {
 	 * Add a click handler to hide the popup.
 	 * @return {boolean} Don't follow the href.
 	 */
-	closer.onclick = function() {
-		overlay.setPosition(undefined);
-		closer.blur();
-		return false;
-	};
+	closer.onclick = closePopup;
 
 	overlay = new ol.Overlay({
 		element: container,
@@ -117,40 +118,8 @@ $(document).ready(function () {
 			}
 		});
 		if (!feature) return;
-		var geometry = feature.getGeometry();
-		var coord = geometry.getCoordinates();
-
-		var html = '';
-		html += '<table>\n';
-		html += row('id', '<a href="http://openstreetmap.org/node/'+feature.get('id')+'">'+feature.get('id')+'</a>');
-		html += row('user', '<a href="http://openstreetmap.org/user/'+feature.get('user')+'">'+feature.get('user')+'</a>');
-		html += row('changeset', '<a href="http://openstreetmap.org/changeset/'+feature.get('changeset')+'">'+feature.get('changeset')+'</a>');
-		var prop = feature.n;
-		for (k in prop) {
-			if (['timestamp', 'version'].indexOf(k) == -1) continue;
-			if (typeof(prop[k]) === 'undefined') continue;
-			html += row(k, prop[k]);
-		}
-		var prop = feature.n.tags; // feature.getAttributes();
-		for (k in prop) {
-			html += row(k, prop[k]);
-		}
-		html += '</table>\n';
-		if (prop['mapillary']) {
-			html += '<a href="http://www.mapillary.com/map/im/'+prop['mapillary']+'">';
-			html += '<img src="https://d1cuyjsrcm0gby.cloudfront.net/'+prop['mapillary']+'/thumb-320.jpg" />';
-			html += '</a>\n';
-		}
-		content.innerHTML = html;
-		overlay.setPosition(coord);
+		popupFeature(feature);
 	});
-
-	function row (key, value) {
-		if (key == 'mapillary') value = '<a href="http://www.mapillary.com/map/im/'+value+'">'+value+'</a>';
-		if (key.replace) key = key.replace(':', ':<wbr />');
-		if (value.replace) value = value.replace(new RegExp(';', 'g'), ';<wbr />');
-		return '<tr><td>'+key+'</td><td>'+value+'</td></tr>\n';
-	}
 
 	map.on('moveend', function() {
 		isMapDefault = false;
@@ -158,3 +127,57 @@ $(document).ready(function () {
 	});
 
 });
+
+function row (key, value) {
+	if (key == 'mapillary') value = '<a href="http://www.mapillary.com/map/im/'+value+'">'+value+'</a>';
+	if (key.replace) key = key.replace(':', ':<wbr />');
+	if (value.replace) value = value.replace(new RegExp(';', 'g'), ';<wbr />');
+	return '<tr><td>'+key+'</td><td>'+value+'</td></tr>\n';
+}
+
+function popupFeature (feature) {
+
+	var geometry = feature.getGeometry();
+	var coord = geometry.getCoordinates();
+
+	var html = '';
+	html += '<table>\n';
+	html += row('id', '<a href="http://openstreetmap.org/node/'+feature.get('id')+'">'+feature.get('id')+'</a>');
+	html += row('user', '<a href="http://openstreetmap.org/user/'+feature.get('user')+'">'+feature.get('user')+'</a>');
+	html += row('changeset', '<a href="http://openstreetmap.org/changeset/'+feature.get('changeset')+'">'+feature.get('changeset')+'</a>');
+	var prop = feature.n;
+	for (k in prop) {
+		if (['timestamp', 'version'].indexOf(k) == -1) continue;
+		if (typeof(prop[k]) === 'undefined') continue;
+		html += row(k, prop[k]);
+	}
+	var prop = feature.n.tags; // feature.getAttributes();
+	for (k in prop) {
+		html += row(k, prop[k]);
+	}
+	html += '</table>\n';
+	if (prop['mapillary']) {
+		html += '<a href="http://www.mapillary.com/map/im/'+prop['mapillary']+'">';
+		html += '<img src="https://d1cuyjsrcm0gby.cloudfront.net/'+prop['mapillary']+'/thumb-320.jpg" />';
+		html += '</a>\n';
+	}
+	content.innerHTML = html;
+	featureClicked = feature.n.id;
+	overlay.setPosition(coord);
+	setHash();
+}
+
+function popupFeatureId (id) {
+	feature = source.forEachFeature(function (f) {
+		if (f.n.id == id) return f;
+	});
+	if (feature) popupFeature(feature);
+}
+
+function closePopup () {
+	overlay.setPosition(undefined);
+	closer.blur();
+	featureClicked = null;
+	setHash();
+	return false;
+};
