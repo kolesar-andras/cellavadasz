@@ -54,19 +54,19 @@
 			<div><img src="img/01.svg" /><input type="checkbox" id="checkbox.telenor" onclick="clickOperator()""/> <label for="checkbox.telenor">Telenor</label></div>
 			<div><img src="img/30.svg" /><input type="checkbox" id="checkbox.telekom" onclick="clickOperator()""/> <label for="checkbox.telekom">Telekom</label></div>
 			<div><img src="img/70.svg" /><input type="checkbox" id="checkbox.vodafone" onclick="clickOperator()""/> <label for="checkbox.vodafone">Vodafone</label></div>
-			<div lang="hu" title="bázisállomás egyelőre meghatározatlan szolgáltatóval"><img src="img/00.svg" /><input type="checkbox" id="checkbox.unknown" onclick="clickOperator()"/> <label lang="hu" for="checkbox.unknown">ismeretlen</label></div>
-			<div lang="hu" title="torony, amelyől még nem tudjuk, hogy bázisállomás-e"><img src="img/nosite.svg" /><input type="checkbox" id="checkbox.nosite" onclick="clickOperator()"/> <label lang="hu" for="checkbox.nosite">torony</label></div>
+			<div lang="hu" title="bázisállomás egyelőre meghatározatlan szolgáltatóval"><img src="img/00.svg" /><input type="checkbox" id="checkbox.unknown" onclick="clickOperator()"/> <label lang="hu" for="checkbox.unknown">ismeretlen szolgáltató</label></div>
+			<div lang="hu" title="egyéb torony (kémény, víztorony), amelyől még nem tudjuk, hogy bázisállomás-e"><img src="img/nosite.svg" /><input type="checkbox" id="checkbox.nosite" onclick="clickOperator()"/> <label lang="hu" for="checkbox.nosite">egyéb torony</label></div>
 		</div>
 		<div id="count">
-			<div lang="hu" title="tornyok összesen (víztornyokkal, kéményekkel együtt)"><span id="count.all"></span> torony</div>
+			<div lang="hu" title="a szűrőfeltételeknek megfelelő helyszínek száma"><span id="count.all"></span> helyszín</div>
 			<div lang="hu" title="bázisállomásként címkézett tornyok"><span id="count.site"></span> bázisállomás</div>
 			<div lang="hu" title="szolgáltatóval címkézett bázisállomások"><span id="count.operator"></span> ~ szolgáltatóval</div>
-			<div lang="hu" title="bázisállomások összesen (közösek külön-külön számítva)"><span id="count.unique.site"></span> ~ szolgáltatókra bontva</div>
+			<div lang="hu" title="bázisállomások összesen (közös helyszínek külön-külön számítva)"><span id="count.unique.site"></span> ~ szolgáltatókra bontva</div>
 			<div lang="hu" title="cella-azonosítókkal is címkézett bázisállomások"><span id="count.cellid"></span> ~ cella-azonosítókkal</div>
-			<div lang="hu" title="bázisállomásokhoz kapcsolt cellák (gsm, umts, lte)"><span id="count.unique.cellid"></span> cella</div>
+			<div lang="hu" title="bázisállomásokhoz kapcsolt cellák darabszáma technológiánként (gsm, umts, lte) és összesen"><span id="count.unique.cellid"></span> cella</div>
 		</div>
 		<div>
-			<a href="#lang-en" onclick="window.lang.change('en'); console.log(sites); console.log(sites); return false;">english</a>
+			<a href="#lang-en" onclick="window.lang.change('en'); return false;">english</a>
 			|
 			<a href="#lang-hu" onclick="window.lang.change('hu'); return false;">hungarian</a>
 		</div>
