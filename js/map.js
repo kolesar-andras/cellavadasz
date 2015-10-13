@@ -126,6 +126,10 @@ $(document).ready(function () {
 		setHash();
 	});
 
+	$(document).on('keyup', function (e) {
+		if (e.keyCode == 27) closePopup();
+	});
+
 });
 
 function row (key, value) {
