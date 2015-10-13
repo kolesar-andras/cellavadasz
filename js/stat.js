@@ -170,9 +170,10 @@ function roundCoord (coord, zoom) {
 }
 
 function parseHash (hash) {
+	if (typeof(hash) != 'string') return {};
+	var argsParsed = {};
 	if (hash.charAt(0) == '#') hash = hash.substring(1);
 	var args = hash.split('&');
-	var argsParsed = {};
 	for (i=0; i < args.length; i++) {
 		var arg = decodeURIComponent(args[i]);
 		var kvp = arg.split('=');
@@ -190,10 +191,8 @@ function parseHash (hash) {
 	return argsParsed;
 }
 
-function getHash (defaultHash) {
+function getHash () {
 	var hash = window.location.hash;
-	if (hash == '') hash = defaultHash;
-	if (hash == '') return;
 	var args = parseHash(hash);
 	if ('map' in args) {
 		var parts = args.map.split('/');
@@ -207,17 +206,25 @@ function getHash (defaultHash) {
 			view.setCenter(center);
 			view.setZoom(zoom);
 		}
+	} else {
+		var extent = ol.extent.boundingExtent([[16.1, 45.7], [22.9, 48.6]]);
+		extent = ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
+		map.getView().fitExtent(extent, map.getSize());
+		if (isMapDefault) mapHashDefault = hashForMap();
 	}
+
+	var displayOriginal = JSON.stringify(display);
 	if ('operator' in args) {
-		var displayOriginal = JSON.stringify(display);
 		var operators = args.operator.split(';');
 		$.each(display, function (key, value) {
 			display[key] = operators.indexOf(key) != -1;
 		});
-		if (JSON.stringify(display) != displayOriginal) {
-			setCheckboxes();
-			clickOperator();
-		}
+	} else {
+		display = JSON.parse(defaultOptions.display);
+	}
+	if (JSON.stringify(display) != displayOriginal) {
+		setCheckboxes();
+		clickOperator();
 	}
 }
 
@@ -227,18 +234,21 @@ function setHash () {
 	if (h !== null) hash.push(h);
 	h = hashForOperator();
 	if (h !== null) hash.push(h);
-	hashString = '#'+hash.join('&');
-	if (window.location.hash != hashString)
-		window.location.hash = hashString;
+	hashNew = '#'+hash.join('&');
+	hashOld = window.location.hash;
+	if (hashOld === '') hashOld = '#';
+	if (hashOld != hashNew)
+		window.location.hash = hashNew;
 }
 
 function hashForMap () {
-	// if (isMapDefault) return null;
 	var view = map.getView();
 	var zoom = view.getZoom();
 	var center = view.getCenter();
 	center = ol.proj.transform(center, 'EPSG:3857', 'EPSG:4326');
-	return 'map='+ zoom + '/' + roundCoord(center[1], zoom) + '/' + roundCoord(center[0], zoom);
+	var hash = 'map='+ zoom + '/' + roundCoord(center[1], zoom) + '/' + roundCoord(center[0], zoom);
+	if (hash == mapHashDefault) return null;
+	return hash;
 }
 
 function hashForOperator () {

@@ -1,6 +1,6 @@
-var keephash = false;
-var isMapDefault = true;
 var map;
+var isMapDefault = true; // map is at default view
+var mapHashDefault = null; // hash of default view
 
 $(document).ready(function () {
 
@@ -69,9 +69,7 @@ $(document).ready(function () {
 		view: new ol.View()
 	});
 
-	keephash = true;
-
-	getHash('#map=8/47.2/19.5');
+	getHash();
 	setCheckboxes();
 
 	layerSwitcher = new ol.control.LayerSwitcher();
@@ -155,10 +153,7 @@ $(document).ready(function () {
 	}
 
 	map.on('moveend', function() {
-		if (keephash) {
-			keephash = false;
-			return;
-		}
+		isMapDefault = false;
 		setHash();
 	});
 
