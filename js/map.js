@@ -1,4 +1,5 @@
 var keephash = false;
+var isMapDefault = true;
 var map;
 
 $(document).ready(function () {
@@ -70,7 +71,7 @@ $(document).ready(function () {
 
 	keephash = true;
 
-	getHash('#map=8/47.2/19.5&telenor&telekom&vodafone');
+	getHash('#map=8/47.2/19.5');
 	setCheckboxes();
 
 	layerSwitcher = new ol.control.LayerSwitcher();

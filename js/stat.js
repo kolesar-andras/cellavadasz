@@ -13,6 +13,10 @@ var display = {
 	nosite: false
 };
 
+var defaultOptions = {
+	display: JSON.stringify(display)
+};
+
 function hasCellId (feature) {
 	return !(
 		!feature.n.tags['gsm:cellid'] &&
@@ -218,20 +222,32 @@ function getHash (defaultHash) {
 }
 
 function setHash () {
+	var hash = [];
+	var h = hashForMap();
+	if (h !== null) hash.push(h);
+	h = hashForOperator();
+	if (h !== null) hash.push(h);
+	hashString = '#'+hash.join('&');
+	if (window.location.hash != hashString)
+		window.location.hash = hashString;
+}
+
+function hashForMap () {
+	// if (isMapDefault) return null;
 	var view = map.getView();
 	var zoom = view.getZoom();
 	var center = view.getCenter();
 	center = ol.proj.transform(center, 'EPSG:3857', 'EPSG:4326');
-	var hash = [];
-	hash.push('map='+ zoom + '/' + roundCoord(center[1], zoom) + '/' + roundCoord(center[0], zoom));
+	return 'map='+ zoom + '/' + roundCoord(center[1], zoom) + '/' + roundCoord(center[0], zoom);
+}
+
+function hashForOperator () {
+	if (JSON.stringify(display) == defaultOptions.display) return null;
 	var operator = [];
 	$.each(display, function (key, value) {
 		if (value) operator.push(key);
 	});
-	if (operator.length) hash.push('operator='+operator.join(';'));
-	hashString = '#'+hash.join('&');
-	if (window.location.hash != hashString)
-		window.location.hash = hashString;
+	return 'operator='+operator.join(';');
 }
 
 $(window).on('hashchange', getHash);
