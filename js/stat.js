@@ -191,7 +191,7 @@ function getHash (defaultHash) {
 	if (hash == '') hash = defaultHash;
 	if (hash == '') return;
 	var args = parseHash(hash);
-	if (args.map) {
+	if ('map' in args) {
 		var parts = args.map.split('/');
 		if (parts.length === 3) {
 			var zoom = parseInt(parts[0], 10);
@@ -204,13 +204,16 @@ function getHash (defaultHash) {
 			view.setZoom(zoom);
 		}
 	}
-	var displayOriginal = JSON.stringify(display);
-	$.each(display, function (key, value) {
-		display[key] = (key in args) ? args[key] : false;
-	});
-	if (JSON.stringify(display) != displayOriginal) {
-		setCheckboxes();
-		clickOperator();
+	if ('operator' in args) {
+		var displayOriginal = JSON.stringify(display);
+		var operators = args.operator.split(';');
+		$.each(display, function (key, value) {
+			display[key] = operators.indexOf(key) != -1;
+		});
+		if (JSON.stringify(display) != displayOriginal) {
+			setCheckboxes();
+			clickOperator();
+		}
 	}
 }
 
@@ -221,9 +224,11 @@ function setHash () {
 	center = ol.proj.transform(center, 'EPSG:3857', 'EPSG:4326');
 	var hash = [];
 	hash.push('map='+ zoom + '/' + roundCoord(center[1], zoom) + '/' + roundCoord(center[0], zoom));
+	var operator = [];
 	$.each(display, function (key, value) {
-		if (value) hash.push(key);
+		if (value) operator.push(key);
 	});
+	if (operator.length) hash.push('operator='+operator.join(';'));
 	hashString = '#'+hash.join('&');
 	if (window.location.hash != hashString)
 		window.location.hash = hashString;
