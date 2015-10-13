@@ -125,3 +125,26 @@ a, a:link, a:visited, a:hover, a:active {
 #popup tr td:first-child {
 	font-weight: bold;
 }
+
+.ol-attribution {
+	max-width: 300px;
+	padding: 10px;
+}
+
+.ol-attribution > ul > li {
+	text-align: left;
+	display: block;
+	margin: 2px;
+	padding-left: 3em;
+	min-height: 3em;
+}
+
+.ol-attribution > ul > li img {
+	position: absolute;
+	left: 10px;
+	max-height: 2.5em;
+}
+
+.ol-attribution > ul > li:first-child:after {
+	content: "A térképi megjelenítéshez OpenLayers motort használunk.";
+}

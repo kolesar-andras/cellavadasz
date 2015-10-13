@@ -13,7 +13,13 @@ $(document).ready(function () {
 		preFeatureInsert: function(feature) {
 		feature.geometry.transform('EPSG:4326', 'EPSG:3857');
 		},
-		url: 'http://kolesar.turistautak.hu/osm/opencellid/geojson/overpass.geojson'
+		url: 'http://kolesar.turistautak.hu/osm/opencellid/geojson/overpass.geojson',
+		attributions: [
+			new ol.Attribution({
+				html: '<a href="http://wiki.openstreetmap.org/wiki/WikiProject_Hungary/Mobiltelefon-tornyok"><img src="img/logo/cellavadasz.png" /></a> A mobiltelefon-tornyok adatait folyamatosan gyűjtjük az <a href="http://www.openstreetmap.org/">OpenStreetMap</a> adatbázisában. A szerkesztés során felhasználjuk az <a href="http://opencellid.org/">OpenCellID</a> nyers méréseit, ezek pontos helyhez kötését a <a href="http://wiki.openstreetmap.org/wiki/WikiProject_Hungary/Mobiltelefon-tornyok">wikiben dokumentált</a> módszertan alapján végezzük. Az adatok <a href="https://hu.wikipedia.org/wiki/Open_Database_License">Open Database Licence</a> alatt érhetők el.</a>',
+			})
+		]
+
 	}));
 	source.once('change', function () {
 		refreshMap();
@@ -42,14 +48,25 @@ $(document).ready(function () {
 		layers: [
 			new ol.layer.Tile({
 				source: new ol.source.XYZ({
-					 url: 'http://a.map.turistautak.hu/tiles/osm/{z}/{x}/{y}.png'
+					url: 'http://a.map.turistautak.hu/tiles/osm/{z}/{x}/{y}.png',
+					attributions: [
+						new ol.Attribution({
+							html: '<a href="http://osm.turistautak.hu/"><img src="img/logo/openstreetmap.png" /></a> Alaptérkép: © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> közreműködők. A megjelenítés szabályait <a href="/www.openstreetmap.org/user/Kolesár">Kolesár András</a> készítette.',
+						})
+					]
 				}),
 				type: 'base',
 				title: 'turistatérkép (OSM)'
 			}),
 
 			new ol.layer.Tile({
-				source: new ol.source.OSM(),
+				source: new ol.source.OSM({
+				attributions: [
+					new ol.Attribution({
+						html: '<a href="http://www.openstreetmap.org/"><img src="img/logo/openstreetmap.png" /></a> Alaptérkép: © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> közreműködők.',
+					})
+				]
+				}),
 				type: 'base',
 				title: 'OpenStreetMap (mapnik)'
 			}),
@@ -59,8 +76,7 @@ $(document).ready(function () {
 					url: 'http://a.map.turistautak.hu/tiles/measurements/{z}/{x}/{y}.png',
 					attributions: [
 						new ol.Attribution({
-							html: '<a href="http://opencellid.org/">OpenCellID database CC-BY-SA 3.0</a>',
-							collapsed: true,
+							html: '<a href="http://opencellid.org/"><img src="img/logo/opencellid.png" /></a> A nyers méréseket az <a href="http://opencellid.org/">OpenCellID</a> adatbázisából ábrázoljuk. CC-BY-SA 3.0</a>',
 						})
 					]
 				}),
