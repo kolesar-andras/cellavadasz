@@ -150,7 +150,7 @@ $(document).ready(function () {
 
 function row (key, value) {
 	if (key == 'mapillary') value = '<a href="http://www.mapillary.com/map/im/'+value+'">'+value+'</a>';
-	if (key.replace) key = key.replace(':', ':<wbr />');
+	if (key.replace) key = key.replace(new RegExp(':', 'g'), ':<wbr />');
 	if (value.replace) value = value.replace(new RegExp(';', 'g'), ';<wbr />');
 	return '<tr><td>'+key+'</td><td>'+value+'</td></tr>\n';
 }
