@@ -31,14 +31,22 @@ $(document).ready(function () {
 		source: source,
 		style: function(feature, resolution) {
 			if (feature.n.type == 'relation') {
+				if (feature.n.tags.type != 'link') return;
+				if (!feature.n.members) return;
 				if (!display.connections) return;
 				var colours = getOperatorColours(feature);
 				if (!colours.length) return null;
+
+				var dash = null;
+				if (feature.n.note == 'not-surveyed-half') dash = [4,4];
+				if (feature.n.members.length < 2) dash = [1,3];
+
 				return [
 					new ol.style.Style({
 						stroke: new ol.style.Stroke({
 							color: addOpacity(colours[0], 0.5),
-							width: 2
+							width: 2,
+							lineDash: dash
 						})
 					})
 				];
