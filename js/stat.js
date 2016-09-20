@@ -112,6 +112,7 @@ function getOperatorColours(feature) {
     if (display.telenor && is.telenor) colours.push('#00a9e3');
     if (display.telekom && is.telekom) colours.push('#000000');
     if (display.vodafone && is.vodafone) colours.push('#d5030b');
+    if (!is.telenor && !is.telekom && !is.vodafone) is.unknown = true;
     if (display.unknown && is.unknown) colours.push('#808080');
     return colours;
 }
