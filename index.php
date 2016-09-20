@@ -56,7 +56,7 @@
 			<div><img src="img/70.svg" /><input type="checkbox" id="checkbox.vodafone" onclick="clickOperator()""/> <label for="checkbox.vodafone">Vodafone</label></div>
 			<div lang="hu" title="bázisállomás egyelőre meghatározatlan szolgáltatóval"><img src="img/00.svg" /><input type="checkbox" id="checkbox.unknown" onclick="clickOperator()"/> <label lang="hu" for="checkbox.unknown">ismeretlen szolgáltató</label></div>
 			<div lang="hu" title="egyéb torony (kémény, víztorony), amelyől még nem tudjuk, hogy bázisállomás-e"><img src="img/nosite.svg" /><input type="checkbox" id="checkbox.nosite" onclick="clickOperator()"/> <label lang="hu" for="checkbox.nosite">egyéb torony</label></div>
-			<div lang="hu" title="mikrohullámú összeköttetések a bázisállomások között"><span class="placeholder"></span><input type="checkbox" id="checkbox.connections" onclick="clickOperator()"/> <label lang="hu" for="checkbox.connections">kapcsolatok</label></div>
+			<div lang="hu" title="mikrohullámú összeköttetés a bázisállomások között"><span class="placeholder"></span><input type="checkbox" id="checkbox.connections" onclick="clickOperator()"/> <label lang="hu" for="checkbox.connections">kapcsolatok</label></div>
 		</div>
 		<div id="count">
 			<div lang="hu" title="a szűrőfeltételeknek megfelelő helyszínek száma"><span id="count.all"></span> helyszín</div>
@@ -65,6 +65,7 @@
 			<div lang="hu" title="bázisállomások összesen (közös helyszínek külön-külön számítva)"><span id="count.unique.site"></span> ~ szolgáltatókra bontva</div>
 			<div lang="hu" title="cella-azonosítókkal is címkézett bázisállomások"><span id="count.cellid"></span> ~ cella-azonosítókkal</div>
 			<div lang="hu" title="bázisállomásokhoz kapcsolt cellák darabszáma technológiánként (gsm, umts, lte) és összesen"><span id="count.unique.cellid"></span> cella</div>
+			<div lang="hu" title="mikrohullámú összeköttetés a bázisállomások között"><span id="count.connection"></span> kapcsolat</div>
 		</div>
 		<div>
 			<a href="#lang-en" onclick="window.lang.change('en'); return false;">english</a>

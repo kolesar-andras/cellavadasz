@@ -93,13 +93,14 @@ function getOperatorArray (feature) {
 function getOperators(feature) {
 	var operator = feature.n.tags.operator;
 	var is = {};
+	if (feature.n.type == 'relation') is.connection = true;
 	if (operator) {
 		if (operator.indexOf('Telenor') != -1) is.telenor = true; // operators.push('01');
 		if (operator.indexOf('Telekom') != -1) is.telekom = true; // operators.push('30');
 		if (operator.indexOf('Vodafone') != -1) is.vodafone = true; // operators.push('70');
 	}
 	if (feature.n.tags['communication:mobile_phone']) is.site = true;
-	if (is.site && !is.telenor && !is.telekom && !is.vodafone) is.unknown = true; // operators.push('00');
+	if ((is.connection || is.site) && !is.telenor && !is.telekom && !is.vodafone) is.unknown = true; // operators.push('00');
 	return is;
 }
 
@@ -109,7 +110,6 @@ function getOperatorColours(feature) {
     if (display.telenor && is.telenor) colours.push('#00a9e3');
     if (display.telekom && is.telekom) colours.push('#000000');
     if (display.vodafone && is.vodafone) colours.push('#d5030b');
-    if (!is.telenor && !is.telekom && !is.vodafone) is.unknown = true;
     if (display.unknown && is.unknown) colours.push('#808080');
     return colours;
 }
@@ -125,6 +125,7 @@ function countCells () {
 	count.unique.cellid.gsm = 0;
 	count.unique.cellid.umts = 0;
 	count.unique.cellid.lte = 0;
+	count.connection = 0;
 
 	source.forEachFeature(function (feature) {
 	is = getOperators(feature);
@@ -135,7 +136,11 @@ function countCells () {
 		(is.unknown && display.unknown) ||
 		(!is.site && display.nosite)
 	)) return;
-	count.all++;
+	if (is.connection) {
+		count.connection++;
+	} else {
+		count.all++;
+	}
 	if (
 	    feature.n.tags['communication:mobile_phone'] &&
 	    feature.n.tags['communication:mobile_phone'] != 'no'
@@ -163,6 +168,7 @@ function countCells () {
 		count.unique.cellid.gsm +
 		count.unique.cellid.umts +
 		count.unique.cellid.lte);
+	document.getElementById('count.connection').innerHTML = count.connection;
 
 	document.getElementById('sarok').style.visibility = 'visible';
 }
