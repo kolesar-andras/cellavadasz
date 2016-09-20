@@ -10,7 +10,8 @@ var display = {
 	telekom: true,
 	vodafone: true,
 	unknown: false,
-	nosite: false
+	nosite: false,
+	connections: false
 };
 
 var defaultOptions = {
@@ -59,19 +60,15 @@ function clickOperator () {
 }
 
 function getCheckboxes () {
-	display.telenor = document.getElementById('checkbox.telenor').checked;
-	display.telekom = document.getElementById('checkbox.telekom').checked;
-	display.vodafone = document.getElementById('checkbox.vodafone').checked;
-	display.unknown = document.getElementById('checkbox.unknown').checked;
-	display.nosite = document.getElementById('checkbox.nosite').checked;
+	$.each(display, function (key, value) {
+		display[key] = document.getElementById('checkbox.'+key).checked;
+	});
 }
 
 function setCheckboxes () {
-	document.getElementById('checkbox.telenor').checked = display.telenor;
-	document.getElementById('checkbox.telekom').checked = display.telekom;
-	document.getElementById('checkbox.vodafone').checked = display.vodafone;
-	document.getElementById('checkbox.unknown').checked = display.unknown;
-	document.getElementById('checkbox.nosite').checked = display.nosite;
+	$.each(display, function (key, value) {
+		document.getElementById('checkbox.'+key).checked = display[key];
+	});
 }
 
 function refreshMap () {

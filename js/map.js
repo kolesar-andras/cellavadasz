@@ -31,6 +31,7 @@ $(document).ready(function () {
 		source: source,
 		style: function(feature, resolution) {
 			if (feature.n.type == 'relation') {
+				if (!display.connections) return;
 				var colours = getOperatorColours(feature);
 				if (!colours.length) return null;
 				return [
