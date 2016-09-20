@@ -30,6 +30,18 @@ $(document).ready(function () {
 	sites = new ol.layer.Vector({
 		source: source,
 		style: function(feature, resolution) {
+			if (feature.n.type == 'relation') {
+				var colours = getOperatorColours(feature);
+				if (!colours.length) return null;
+				return [
+					new ol.style.Style({
+						stroke: new ol.style.Stroke({
+							color: addOpacity(colours[0], 0.5),
+							width: 2
+						})
+					})
+				];
+			}
 			var operators = getOperatorArray(feature);
 			if (!operators.length) return;
 
@@ -119,6 +131,7 @@ $(document).ready(function () {
 		var distance = null;
 		var feature = null;
 		source.forEachFeature(function (f) {
+			if (f.n.type != 'node') return;
 			var operators = getOperatorArray(f);
 			if (!operators.length) return; // exclude invisible
 
@@ -201,3 +214,15 @@ function closePopup () {
 	setHash();
 	return false;
 };
+
+function hexToRgb(hex) {
+	var res = hex.match(/[a-f0-9]{2}/gi);
+	return res && res.length === 3
+		? res.map(function(v) { return parseInt(v, 16) })
+		: null;
+}
+
+function addOpacity(hex, opacity) {
+	var c = hexToRgb(hex);
+	return r = 'rgba('+c[0]+','+c[1]+','+c[2]+','+opacity+')';
+}
