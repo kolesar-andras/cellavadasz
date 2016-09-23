@@ -137,7 +137,7 @@ function countCells () {
 		(!is.site && display.nosite)
 	)) return;
 	if (is.connection) {
-		count.connection++;
+		if (feature.n.note != 'not-surveyed-half') count.connection++;
 	} else {
 		count.all++;
 	}
