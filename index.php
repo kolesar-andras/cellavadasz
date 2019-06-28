@@ -73,9 +73,9 @@
 			<a href="#lang-hu" onclick="window.lang.change('hu'); return false;">hungarian</a>
 		</div>
 		<div>
-			<a href="http://kolesar.turistautak.hu/osm/opencellid/geojson/overpass.geojson">geojson</a>
+			<a href="http://adam.openstreetmap.hu/opencellid/sites/overpass.geojson">geojson</a>
 			|
-			<a href="http://kolesar.turistautak.hu/osm/opencellid/geojson/overpass.kml">kml</a>
+			<a href="http://adam.openstreetmap.hu/opencellid/sites/overpass.kml">kml</a>
 		</div>
 	</div>
 	<div id="map" class="map">

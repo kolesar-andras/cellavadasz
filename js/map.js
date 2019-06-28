@@ -13,7 +13,7 @@ $(document).ready(function () {
 		preFeatureInsert: function(feature) {
 		feature.geometry.transform('EPSG:4326', 'EPSG:3857');
 		},
-		url: 'http://kolesar.turistautak.hu/osm/opencellid/geojson/overpass.geojson',
+		url: 'http://adam.openstreetmap.hu/opencellid/sites/overpass.geojson',
 		attributions: [
 			new ol.Attribution({
 				html: '<a href="http://wiki.openstreetmap.org/wiki/WikiProject_Hungary/Mobiltelefon-tornyok"><img src="img/logo/cellavadasz.png" /></a> A mobiltelefon-tornyok adatait folyamatosan gyűjtjük az <a href="http://www.openstreetmap.org/">OpenStreetMap</a> adatbázisában. A szerkesztés során felhasználjuk az <a href="http://opencellid.org/">OpenCellID</a> nyers méréseit, ezek pontos helyhez kötését a <a href="http://wiki.openstreetmap.org/wiki/WikiProject_Hungary/Mobiltelefon-tornyok">wikiben dokumentált</a> módszertan alapján végezzük. Az adatok <a href="https://hu.wikipedia.org/wiki/Open_Database_License">Open Database Licence</a> alatt érhetők el.</a>',
