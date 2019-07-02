@@ -54,9 +54,9 @@ $(document).ready(function () {
 			var operators = getOperatorArray(feature);
 			if (!operators.length) return;
 
-			var small = !hasCellId(feature) ? '.small' : '';
-			var filename = 'img/' + operators.join('-') + small + '.svg';
-			var icon = new ol.style.Icon({ src: filename });
+			var small = !hasCellId(feature);
+			var filename = 'img/' + operators.join('-') + '.svg';
+			var icon = new ol.style.Icon({ src: filename, scale: small ? 0.7 : 1 });
 			var style = {image: icon};
 			return [new ol.style.Style(style)];
 		},
