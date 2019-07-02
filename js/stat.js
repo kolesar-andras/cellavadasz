@@ -29,7 +29,7 @@ function hasCellId (feature) {
 function getVisibleItems (feature, key) {
 	if (!feature.n.tags[key]) return;
 	var out = [];
-	operators = feature.n.tags.operator.split('; ');
+	operators = (feature.n.tags.operator || '').split('; ');
 	items = feature.n.tags[key].split('; ');
 	for (var i=0; i<operators.length; i++) {
 		operator = operators[i];
