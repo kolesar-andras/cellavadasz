@@ -28,14 +28,9 @@
      id="layer1">
     <path
        transform="matrix(0.05,0,0,0.05,10.786245,998.38637)"
-       d="m 284.28571,452.36221 a 127.14286,127.14286 0 0 1 0,254.28572 l 0,-127.14286 z"
-       id="path2985"
-       style="fill:#ff30b8;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:20;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-    <path
-       transform="matrix(0.05,0,0,0.05,10.786245,998.38637)"
-       d="m 284.28571,706.64793 a 127.14286,127.14286 0 1 1 0,-254.28572 l 0,127.14286 z"
+       d="m 411.42857,579.50507 a 127.14286,127.14286 0 1 1 -254.28572,0 127.14286,127.14286 0 1 1 254.28572,0 z"
        id="path2989"
-       style="fill:#d5030b;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:20;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+       style="fill:#123f7b;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:20;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
     <path
        transform="matrix(0.0675,0,0,0.0675,12.078571,1012.642)"
        d="m 288.57143,218.07646 a 97.14286,97.14286 0 1 1 -194.285717,0 97.14286,97.14286 0 1 1 194.285717,0 z"
