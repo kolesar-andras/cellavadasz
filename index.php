@@ -52,6 +52,7 @@
 	<div id="sarok">
 		<div id="operators">
 			<div><img src="img/01.svg" /><input type="checkbox" id="checkbox.telenor" onclick="clickOperator()""/> <label for="checkbox.telenor">Telenor</label></div>
+			<div><img src="img/03.svg" /><input type="checkbox" id="checkbox.digi" onclick="clickOperator()""/> <label for="checkbox.digi">Digi</label></div>
 			<div><img src="img/30.svg" /><input type="checkbox" id="checkbox.telekom" onclick="clickOperator()""/> <label for="checkbox.telekom">Telekom</label></div>
 			<div><img src="img/70.svg" /><input type="checkbox" id="checkbox.vodafone" onclick="clickOperator()""/> <label for="checkbox.vodafone">Vodafone</label></div>
 			<div lang="hu" title="bázisállomás egyelőre meghatározatlan szolgáltatóval"><img src="img/00.svg" /><input type="checkbox" id="checkbox.unknown" onclick="clickOperator()"/> <label lang="hu" for="checkbox.unknown">ismeretlen szolgáltató</label></div>
