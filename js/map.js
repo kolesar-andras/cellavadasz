@@ -105,6 +105,20 @@ $(document).ready(function () {
 				visible: false
 			}),
 
+			new ol.layer.Tile({
+				source: new ol.source.TileWMS({
+					url: 'http://mlmap.digi.hu:8080/geoserver/gwc/service/wms',
+					params: {
+						'layers': 'coveragemap:onair',
+						'tiled': true,
+						'srs': 'EPSG:3857'
+					},
+					serverType: 'geoserver',
+				}),
+				title: 'Digi lefedettség',
+				visible: false
+			}),
+
 			sites
 
 		],
