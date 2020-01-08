@@ -21,17 +21,17 @@ var defaultOptions = {
 
 function hasCellId (feature) {
 	return !(
-		!feature.n.tags['gsm:cellid'] &&
-		!feature.n.tags['umts:cellid'] &&
-		!feature.n.tags['lte:cellid']
+		!feature.getProperties().tags['gsm:cellid'] &&
+		!feature.getProperties().tags['umts:cellid'] &&
+		!feature.getProperties().tags['lte:cellid']
 	);
 }
 
 function getVisibleItems (feature, key) {
-	if (!feature.n.tags[key]) return;
+	if (!feature.getProperties().tags[key]) return;
 	var out = [];
-	operators = (feature.n.tags.operator || '').split('; ');
-	items = feature.n.tags[key].split('; ');
+	operators = (feature.getProperties().tags.operator || '').split('; ');
+	items = feature.getProperties().tags[key].split('; ');
 	for (var i=0; i<operators.length; i++) {
 		operator = operators[i];
 		if (operator == 'Telenor' && !display.telenor) continue;
@@ -94,16 +94,16 @@ function getOperatorArray (feature) {
 }
 
 function getOperators(feature) {
-	var operator = feature.n.tags.operator;
+	var operator = feature.getProperties().tags.operator;
 	var is = {};
-	if (feature.n.type == 'relation') is.connection = true;
+	if (feature.getProperties().type == 'relation') is.connection = true;
 	if (operator) {
 		if (operator.indexOf('Telenor') != -1) is.telenor = true; // operators.push('01');
 		if (operator.indexOf('Digi') != -1) is.digi = true; // operators.push('03');
 		if (operator.indexOf('Telekom') != -1) is.telekom = true; // operators.push('30');
 		if (operator.indexOf('Vodafone') != -1) is.vodafone = true; // operators.push('70');
 	}
-	if (feature.n.tags['communication:mobile_phone']) is.site = true;
+	if (feature.getProperties().tags['communication:mobile_phone']) is.site = true;
 	if ((is.connection || is.site) && !is.telenor && !is.digi && !is.telekom && !is.vodafone) is.unknown = true; // operators.push('00');
 	return is;
 }
@@ -144,15 +144,15 @@ function countCells () {
 		(!is.site && display.nosite)
 	)) return;
 	if (is.connection) {
-		if (feature.n.note != 'not-surveyed-half') count.connection++;
+		if (feature.getProperties().note != 'not-surveyed-half') count.connection++;
 	} else {
 		count.all++;
 	}
 	if (
-	    feature.n.tags['communication:mobile_phone'] &&
-	    feature.n.tags['communication:mobile_phone'] != 'no'
+	    feature.getProperties().tags['communication:mobile_phone'] &&
+	    feature.getProperties().tags['communication:mobile_phone'] != 'no'
 	) count.site++;
-	if (feature.n.tags.operator) {
+	if (feature.getProperties().tags.operator) {
 	    count.operator++;
 	    count.unique.site += getCount(getVisibleItems(feature, 'operator'));
 	}

@@ -30,16 +30,16 @@ $(document).ready(function () {
 	sites = new ol.layer.Vector({
 		source: source,
 		style: function(feature, resolution) {
-			if (feature.n.type == 'relation') {
-				if (feature.n.tags.type != 'link') return;
-				if (!feature.n.members) return;
+			if (feature.getProperties().type == 'relation') {
+				if (feature.getProperties().tags.type != 'link') return;
+				if (!feature.getProperties().members) return;
 				if (!display.connections) return;
 				var colours = getOperatorColours(feature);
 				if (!colours.length) return null;
 
 				var dash = null;
-				if (feature.n.note == 'not-surveyed-half') dash = [4,4];
-				if (feature.n.members.length < 2) dash = [1,3];
+				if (feature.getProperties().note == 'not-surveyed-half') dash = [4,4];
+				if (feature.getProperties().members.length < 2) dash = [1,3];
 
 				return [
 					new ol.style.Style({
@@ -154,7 +154,7 @@ $(document).ready(function () {
 		var distance = null;
 		var feature = null;
 		source.forEachFeature(function (f) {
-			if (f.n.type != 'node') return;
+			if (f.getProperties().type != 'node') return;
 			var operators = getOperatorArray(f);
 			if (!operators.length) return; // exclude invisible
 
@@ -182,6 +182,7 @@ $(document).ready(function () {
 		if (e.keyCode == 27) closePopup();
 	});
 
+
 });
 
 function row (key, value) {
@@ -201,13 +202,13 @@ function popupFeature (feature) {
 	html += row('id', '<a href="http://openstreetmap.org/node/'+feature.get('id')+'">'+feature.get('id')+'</a>');
 	html += row('user', '<a href="http://openstreetmap.org/user/'+feature.get('user')+'">'+feature.get('user')+'</a>');
 	html += row('changeset', '<a href="http://openstreetmap.org/changeset/'+feature.get('changeset')+'">'+feature.get('changeset')+'</a>');
-	var prop = feature.n;
+	var prop = feature.getProperties();
 	for (k in prop) {
 		if (['timestamp', 'version'].indexOf(k) == -1) continue;
 		if (typeof(prop[k]) === 'undefined') continue;
 		html += row(k, prop[k]);
 	}
-	var prop = feature.n.tags; // feature.getAttributes();
+	var prop = feature.getProperties().tags; // feature.getAttributes();
 	for (k in prop) {
 		html += row(k, prop[k]);
 	}
@@ -218,14 +219,14 @@ function popupFeature (feature) {
 		html += '</a>\n';
 	}
 	content.innerHTML = html;
-	featureClicked = feature.n.id;
+	featureClicked = feature.getProperties().id;
 	overlay.setPosition(coord);
 	setHash();
 }
 
 function popupFeatureId (id) {
 	feature = source.forEachFeature(function (f) {
-		if (f.n.id == id) return f;
+		if (f.getProperties().id == id) return f;
 	});
 	if (feature) popupFeature(feature);
 }
