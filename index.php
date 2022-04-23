@@ -11,7 +11,7 @@
 	<script src="lib/jquery-cookie.js" type="text/javascript"></script>
 	<script src="lib/jquery-lang.js" type="text/javascript"></script>
 	<script src="js/lang.js" type="text/javascript"></script>
-	<script src="lib/ol/build/ol-debug.js" type="text/javascript"></script>
+	<script src="lib/ol/build/ol.js" type="text/javascript"></script>
 	<script src="lib/ol/build/ol3-layerswitcher.js" type="text/javascript"></script>
 	<script src="js/stat.js" type="text/javascript"></script>
 	<script src="js/map.js" type="text/javascript"></script>
