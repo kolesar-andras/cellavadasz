@@ -6,7 +6,7 @@ var count = {
 };
 
 var display = {
-	telenor: true,
+	yettel: true,
 	digi: true,
 	telekom: true,
 	vodafone: true,
@@ -34,7 +34,7 @@ function getVisibleItems (feature, key) {
 	items = feature.getProperties().tags[key].split('; ');
 	for (var i=0; i<operators.length; i++) {
 		operator = operators[i];
-		if (operator == 'Telenor' && !display.telenor) continue;
+		if (operator == 'Yettel' && !display.yettel) continue;
 		if (operator == 'Digi' && !display.digi) continue;
 		if (operator == 'Telekom' && !display.telekom) continue;
 		if (operator == 'Vodafone' && !display.vodafone) continue;
@@ -83,7 +83,7 @@ function getOperatorArray (feature) {
 
 	is = getOperators(feature);
 	var operators = [];
-	if (display.telenor && is.telenor) operators.push('01');
+	if (display.yettel && is.yettel) operators.push('01');
 	if (display.digi && is.digi) operators.push('03');
 	if (display.telekom && is.telekom) operators.push('30');
 	if (display.vodafone && is.vodafone) operators.push('70');
@@ -98,20 +98,20 @@ function getOperators(feature) {
 	var is = {};
 	if (feature.getProperties().type == 'relation') is.connection = true;
 	if (operator) {
-		if (operator.indexOf('Telenor') != -1) is.telenor = true; // operators.push('01');
+		if (operator.indexOf('Yettel') != -1) is.yettel = true; // operators.push('01');
 		if (operator.indexOf('Digi') != -1) is.digi = true; // operators.push('03');
 		if (operator.indexOf('Telekom') != -1) is.telekom = true; // operators.push('30');
 		if (operator.indexOf('Vodafone') != -1) is.vodafone = true; // operators.push('70');
 	}
 	if (feature.getProperties().tags['communication:mobile_phone']) is.site = true;
-	if ((is.connection || is.site) && !is.telenor && !is.digi && !is.telekom && !is.vodafone) is.unknown = true; // operators.push('00');
+	if ((is.connection || is.site) && !is.yettel && !is.digi && !is.telekom && !is.vodafone) is.unknown = true; // operators.push('00');
 	return is;
 }
 
 function getOperatorColours(feature) {
     var colours = [];
     var is = getOperators(feature);
-    if (display.telenor && is.telenor) colours.push('#00a9e3');
+    if (display.yettel && is.yettel) colours.push('#AAFE01');
     // TODO szín választása Digihez
     //if (display.digi && is.digi) colours.push('#');
     if (display.telekom && is.telekom) colours.push('#000000');
@@ -136,7 +136,7 @@ function countCells () {
 	source.forEachFeature(function (feature) {
 	is = getOperators(feature);
 	if (!(
-		(is.telenor && display.telenor) ||
+		(is.yettel && display.yettel) ||
 		(is.digi && display.digi) ||
 		(is.telekom && display.telekom) ||
 		(is.vodafone && display.vodafone) ||
