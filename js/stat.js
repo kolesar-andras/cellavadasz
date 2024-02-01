@@ -23,7 +23,7 @@ function hasCellId (feature) {
 	return !(
 		!feature.getProperties().tags['gsm:cellid'] &&
 		!feature.getProperties().tags['umts:cellid'] &&
-		!feature.getProperties().tags['lte:cellid']
+		!feature.getProperties().tags['lte:eNB']
 	);
 }
 
